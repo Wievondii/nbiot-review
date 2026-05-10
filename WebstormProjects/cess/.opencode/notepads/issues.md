@@ -96,3 +96,23 @@
 **责任 Developer：** Dev-1
 **状态：** ✅ 已修复 (2026-05-10 17:00)
 
+### 2026-05-10 Dev-1 zombieBodyMap从未被填充，射击伤害链路断裂 [第1轮复审]
+
+**现象：**
+- `registerZombieBody(zombieId, body)` 方法已定义但从未被调用
+- `zombieBodyMap` 始终为空，`shoot()` 中 `zombieBodyMap.get(result.body)` 始终返回 `undefined`
+- 射线能命中僵尸物理体，但无法识别命中了哪个僵尸，`onZombieHit()` 永远不会执行
+
+**原因：**
+- Dev-1 定义了 `registerZombieBody()` API 但未在僵尸创建流程中集成调用
+- Zombie 构造函数创建物理体后只注册到 PhysicsWorld，未注册到 GameEngine 的 zombieBodyMap
+- WaveManager 和 ZombieFactory 不持有 GameEngine 引用，无法调用注册方法
+
+**解决方案：**
+- 在 WaveManager 中添加 `onZombieCreated` 回调函数
+- 在 `spawnZombies()` 中创建僵尸后调用回调注册物理体
+- 在 GameEngine 中设置回调函数调用 `registerZombieBody()`
+
+**责任 Developer：** Dev-1
+**状态：** ✅ 已修复 (2026-05-10 18:00)
+

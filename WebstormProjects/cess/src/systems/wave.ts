@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
 import { IWaveManager } from '../types';
 import { Zombie, ZombieFactory } from '../entities/zombie';
 import { PhysicsWorld } from '../engine/PhysicsWorld';
@@ -47,6 +48,9 @@ export class WaveManager implements IWaveManager {
 
   /** 波次完成回调 */
   public onWaveComplete: () => void = () => {};
+
+  /** 僵尸创建回调（用于注册物理体映射） */
+  public onZombieCreated: (zombieId: string, body: CANNON.Body) => void = () => {};
 
   /** 当前波次的所有僵尸 */
   private zombies: Zombie[] = [];
@@ -152,11 +156,13 @@ export class WaveManager implements IWaveManager {
       zombieConfig
     );
 
-    // 将僵尸添加到场景
+    // 将僵尸添加到场景，并注册物理体映射
     this.zombies.forEach((zombie) => {
       if (this.scene) {
         this.scene.add(zombie.mesh);
       }
+      // 调用回调函数注册僵尸物理体
+      this.onZombieCreated(zombie.id, zombie.body);
     });
   }
 

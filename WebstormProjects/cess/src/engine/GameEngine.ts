@@ -123,6 +123,11 @@ export class GameEngine implements IGameEngine {
       this.onWaveComplete();
     };
 
+    // 设置僵尸创建回调（用于注册物理体映射）
+    this.waveManager.onZombieCreated = (zombieId: string, body: CANNON.Body) => {
+      this.registerZombieBody(zombieId, body);
+    };
+
     // 设置游戏状态回调
     this.setupGameStateCallbacks();
 
