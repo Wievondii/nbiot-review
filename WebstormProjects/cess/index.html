@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>僵尸猎杀 - Zombie Hunter FPS</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #1a1a1a;
+        font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        color: #e0e0e0;
+      }
+
+      #game-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      #game-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* HUD 覆盖层 */
+      #hud-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      /* 准星 */
+      #crosshair {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+      }
+
+      #crosshair::before,
+      #crosshair::after {
+        content: '';
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+
+      #crosshair::before {
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        transform: translateY(-50%);
+      }
+
+      #crosshair::after {
+        left: 50%;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        transform: translateX(-50%);
+      }
+
+      /* 生命值条 */
+      #health-bar-container {
+        position: absolute;
+        bottom: 40px;
+        left: 40px;
+        width: 250px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(139, 0, 0, 0.8);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      #health-bar {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #8b0000, #cc0000);
+        transition: width 0.3s ease;
+      }
+
+      #health-text {
+        position: absolute;
+        bottom: 65px;
+        left: 40px;
+        font-size: 14px;
+        color: #cc0000;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      }
+
+      /* 弹药显示 */
+      #ammo-display {
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+        font-size: 32px;
+        font-weight: bold;
+        color: #e0e0e0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        font-family: 'Courier New', monospace;
+      }
+
+      #ammo-label {
+        position: absolute;
+        bottom: 75px;
+        right: 40px;
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      #weapon-name {
+        position: absolute;
+        bottom: 95px;
+        right: 40px;
+        font-size: 16px;
+        color: #b0b0b0;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      }
+
+      /* 波次信息 */
+      #wave-info {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 18px;
+        color: #2d5a27;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        text-align: center;
+      }
+
+      #wave-number {
+        font-size: 28px;
+        font-weight: bold;
+        color: #4a8a3f;
+      }
+
+      /* 得分 */
+      #score-display {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #d4a017;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+      }
+
+      /* 游戏状态覆盖层 */
+      #game-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 20;
+        pointer-events: auto;
+      }
+
+      #game-overlay.hidden {
+        display: none;
+      }
+
+      .overlay-content {
+        text-align: center;
+        background: rgba(26, 26, 26, 0.9);
+        border: 2px solid rgba(139, 0, 0, 0.6);
+        border-radius: 8px;
+        padding: 40px 60px;
+        box-shadow: 0 0 40px rgba(139, 0, 0, 0.3);
+      }
+
+      .overlay-title {
+        font-size: 48px;
+        font-weight: bold;
+        color: #8b0000;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+      }
+
+      .overlay-subtitle {
+        font-size: 18px;
+        color: #888;
+        margin-bottom: 30px;
+      }
+
+      .overlay-button {
+        display: inline-block;
+        padding: 12px 40px;
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #e0e0e0;
+        background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+        border: 1px solid rgba(139, 0, 0, 0.6);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        pointer-events: auto;
+      }
+
+      .overlay-button:hover {
+        background: linear-gradient(180deg, #4a4a4a, #3a3a3a);
+        border-color: #8b0000;
+        color: #ffffff;
+        transform: scale(1.05);
+      }
+
+      .overlay-button:active {
+        transform: scale(0.98);
+      }
+
+      /* 换弹提示 */
+      #reload-hint {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 30px);
+        font-size: 16px;
+        color: #d4a017;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      #reload-hint.visible {
+        opacity: 1;
+      }
+
+      /* 伤害闪屏 */
+      #damage-flash {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(ellipse at center, transparent 50%, rgba(139, 0, 0, 0.4) 100%);
+        opacity: 0;
+        transition: opacity 0.1s ease;
+        pointer-events: none;
+      }
+
+      #damage-flash.active {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+
+      <!-- HUD 覆盖层 -->
+      <div id="hud-overlay">
+        <div id="crosshair"></div>
+        <div id="health-text">生命值</div>
+        <div id="health-bar-container">
+          <div id="health-bar"></div>
+        </div>
+        <div id="weapon-name">手枪</div>
+        <div id="ammo-label">弹药</div>
+        <div id="ammo-display">12 / 12</div>
+        <div id="wave-info">
+          <div>波次</div>
+          <div id="wave-number">1</div>
+        </div>
+        <div id="score-display">0</div>
+        <div id="reload-hint">按 R 换弹</div>
+        <div id="damage-flash"></div>
+      </div>
+
+      <!-- 游戏覆盖层（菜单/暂停/结束） -->
+      <div id="game-overlay">
+        <div class="overlay-content">
+          <div class="overlay-title">僵尸猎杀</div>
+          <div class="overlay-subtitle">第一人称射击生存游戏</div>
+          <div class="overlay-button" id="btn-start">开始游戏</div>
+          <div style="margin-top: 20px; color: #666; font-size: 14px;">
+            <div>WASD 移动 | 鼠标 瞄准 | 左键 射击</div>
+            <div>R 换弹 | Shift 冲刺 | ESC 暂停</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

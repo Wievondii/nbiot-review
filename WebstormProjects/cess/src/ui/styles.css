@@ -1,0 +1,716 @@
+/**
+ * 游戏UI样式
+ * 暗黑恐怖风格，半透明磨砂效果，金属质感边框
+ */
+
+/* ==================== CSS变量 ==================== */
+:root {
+  /* 主色调 */
+  --color-bg-dark: #1a1a1a;
+  --color-bg-darker: #0d0d0d;
+  --color-primary: #8b0000;
+  --color-primary-light: #b22222;
+  --color-primary-dark: #5c0000;
+
+  /* 辅助色 */
+  --color-green: #2d5a27;
+  --color-green-light: #3d7a37;
+  --color-orange: #8b4513;
+  --color-orange-light: #a0522d;
+
+  /* 文字颜色 */
+  --color-text: #e0e0e0;
+  --color-text-dim: #888888;
+  --color-text-bright: #ffffff;
+
+  /* UI效果 */
+  --glass-bg: rgba(26, 26, 26, 0.85);
+  --glass-border: rgba(139, 0, 0, 0.3);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  --glass-blur: blur(10px);
+
+  /* 金属质感 */
+  --metal-gradient: linear-gradient(135deg, rgba(60, 60, 60, 0.8), rgba(30, 30, 30, 0.9));
+  --metal-border: 1px solid rgba(100, 100, 100, 0.5);
+  --metal-highlight: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+
+  /* 字体 */
+  --font-main: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  --font-title: 'Impact', 'Arial Black', sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+
+  /* 尺寸 */
+  --border-radius: 4px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+}
+
+/* ==================== 基础样式 ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==================== UI容器 ==================== */
+#game-ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  font-family: var(--font-main);
+  color: var(--color-text);
+}
+
+#game-ui * {
+  pointer-events: auto;
+}
+
+/* ==================== HUD ==================== */
+#hud {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+#hud > * {
+  pointer-events: auto;
+}
+
+/* HUD面板通用样式 */
+.hud-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--metal-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm) var(--spacing-md);
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.hud-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--metal-highlight);
+}
+
+/* 生命值面板 */
+.hud-health {
+  min-width: 200px;
+}
+
+.health-bar-container {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: var(--spacing-xs);
+}
+
+.health-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.health-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.health-text {
+  font-size: 12px;
+  color: var(--color-text-dim);
+  margin-bottom: 2px;
+}
+
+.health-value {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-primary-light);
+  text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+}
+
+/* 弹药面板 */
+.hud-ammo {
+  text-align: center;
+  min-width: 120px;
+}
+
+.ammo-current {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: bold;
+  color: var(--color-text-bright);
+  line-height: 1;
+}
+
+.ammo-separator {
+  color: var(--color-text-dim);
+  font-size: 24px;
+  margin: 0 4px;
+}
+
+.ammo-max {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--color-text-dim);
+}
+
+.ammo-label {
+  font-size: 12px;
+  color: var(--color-text-dim);
+  margin-top: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* 得分面板 */
+.hud-score {
+  text-align: right;
+  min-width: 150px;
+}
+
+.score-value {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--color-orange-light);
+  text-shadow: 0 0 10px rgba(139, 69, 19, 0.5);
+}
+
+.score-label {
+  font-size: 12px;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* 波次信息 */
+.hud-wave {
+  position: absolute;
+  top: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.wave-number {
+  font-family: var(--font-title);
+  font-size: 18px;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.wave-zombies {
+  font-size: 14px;
+  color: var(--color-primary-light);
+  margin-top: var(--spacing-xs);
+}
+
+/* 连杀提示 */
+.combo-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-title);
+  font-size: 48px;
+  color: var(--color-primary-light);
+  text-shadow: 
+    0 0 20px rgba(139, 0, 0, 0.8),
+    0 0 40px rgba(139, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.combo-display.active {
+  opacity: 1;
+  animation: combo-pulse 0.5s ease-out;
+}
+
+@keyframes combo-pulse {
+  0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* 准星 */
+.crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+}
+
+.crosshair::before,
+.crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.crosshair::before {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.crosshair::after {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.crosshair-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--color-primary-light);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ==================== 菜单通用样式 ==================== */
+.menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu-container {
+  background: var(--metal-gradient);
+  border: var(--metal-border);
+  border-radius: 8px;
+  padding: var(--spacing-xl);
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+}
+
+.menu-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: var(--metal-highlight);
+  pointer-events: none;
+}
+
+/* 菜单标题 */
+.menu-title {
+  font-family: var(--font-title);
+  font-size: 36px;
+  color: var(--color-primary-light);
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  text-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.menu-subtitle {
+  font-size: 14px;
+  color: var(--color-text-dim);
+  text-align: center;
+  margin-top: calc(-1 * var(--spacing-md));
+  margin-bottom: var(--spacing-lg);
+}
+
+/* 菜单按钮 */
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.menu-btn {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.menu-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.2), transparent);
+  transition: left 0.3s ease;
+}
+
+.menu-btn:hover {
+  background: rgba(139, 0, 0, 0.3);
+  border-color: var(--color-primary);
+  color: var(--color-text-bright);
+  transform: translateX(4px);
+}
+
+.menu-btn:hover::before {
+  left: 100%;
+}
+
+.menu-btn:active {
+  transform: translateX(2px);
+  background: rgba(139, 0, 0, 0.5);
+}
+
+.menu-btn.primary {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  border-color: var(--color-primary-light);
+}
+
+.menu-btn.primary:hover {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+}
+
+/* ==================== 主菜单特殊样式 ==================== */
+#main-menu .menu-container {
+  text-align: center;
+}
+
+.game-logo {
+  font-family: var(--font-title);
+  font-size: 48px;
+  color: var(--color-primary-light);
+  text-shadow: 
+    0 0 20px rgba(139, 0, 0, 0.8),
+    0 0 40px rgba(139, 0, 0, 0.4),
+    0 0 60px rgba(139, 0, 0, 0.2);
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: 6px;
+}
+
+.game-tagline {
+  font-size: 14px;
+  color: var(--color-green-light);
+  margin-bottom: var(--spacing-xl);
+  font-style: italic;
+}
+
+/* 高分显示 */
+.high-score-display {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+.high-score-label {
+  font-size: 12px;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.high-score-value {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--color-orange-light);
+  margin-top: var(--spacing-xs);
+}
+
+/* ==================== 暂停菜单特殊样式 ==================== */
+#pause-menu .menu-title {
+  font-size: 28px;
+}
+
+/* ==================== 游戏结束特殊样式 ==================== */
+#game-over .menu-container {
+  text-align: center;
+}
+
+.game-over-title {
+  font-family: var(--font-title);
+  font-size: 42px;
+  color: var(--color-primary-light);
+  text-shadow: 0 0 30px rgba(139, 0, 0, 0.8);
+  margin-bottom: var(--spacing-lg);
+}
+
+.final-score {
+  margin-bottom: var(--spacing-lg);
+}
+
+.final-score-label {
+  font-size: 14px;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.final-score-value {
+  font-family: var(--font-mono);
+  font-size: 48px;
+  color: var(--color-orange-light);
+  text-shadow: 0 0 20px rgba(139, 69, 19, 0.5);
+  margin-top: var(--spacing-sm);
+}
+
+.new-high-score {
+  font-size: 16px;
+  color: var(--color-green-light);
+  margin-top: var(--spacing-sm);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ==================== 消息提示 ==================== */
+.message-popup {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: 18px;
+  color: var(--color-text-bright);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 200;
+}
+
+.message-popup.active {
+  opacity: 1;
+  visibility: visible;
+  animation: message-slide 0.3s ease-out;
+}
+
+@keyframes message-slide {
+  from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+/* 波次开始提示 */
+.wave-announce {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-title);
+  font-size: 64px;
+  color: var(--color-primary-light);
+  text-shadow: 
+    0 0 30px rgba(139, 0, 0, 0.8),
+    0 0 60px rgba(139, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 150;
+}
+
+.wave-announce.active {
+  animation: wave-announce 2s ease-out forwards;
+}
+
+@keyframes wave-announce {
+  0% { opacity: 0; transform: translateX(-50%) scale(2); }
+  20% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+  80% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.8); }
+}
+
+/* ==================== 设置面板 ==================== */
+.settings-panel {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.setting-label {
+  font-size: 14px;
+  color: var(--color-text-dim);
+}
+
+.setting-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 4px;
+  background: rgba(100, 100, 100, 0.3);
+  border-radius: 2px;
+  outline: none;
+}
+
+.setting-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--color-primary-light);
+}
+
+.setting-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--color-primary-light);
+}
+
+/* ==================== 加载界面 ==================== */
+#loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-darker);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-text {
+  font-family: var(--font-title);
+  font-size: 24px;
+  color: var(--color-primary-light);
+  letter-spacing: 4px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.loading-bar {
+  width: 200px;
+  height: 4px;
+  background: rgba(100, 100, 100, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary-light));
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* ==================== 响应式设计 ==================== */
+@media (max-width: 768px) {
+  .menu-container {
+    min-width: 280px;
+    padding: var(--spacing-lg);
+  }
+
+  .game-logo {
+    font-size: 36px;
+  }
+
+  .menu-title {
+    font-size: 28px;
+  }
+
+  .hud-panel {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .ammo-current {
+    font-size: 28px;
+  }
+
+  .score-value {
+    font-size: 22px;
+  }
+}
