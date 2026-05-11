@@ -294,7 +294,7 @@ struct MineTabComponent {
           .onClick(() => { router.pushUrl({ url: 'pages/settingsPage' }) })
         }.width('100%')
       }.layoutWeight(1).backgroundColor('#EDEDED').padding({ top: 0 })
-    }.width('100%').height('100%').backgroundColor('#EDEDED').justifyContent(FlexAlign.Start).expandSafeArea([SafeAreaType.SYSTEM], [], [])
+    }.width('100%').height('100%').backgroundColor('#EDEDED').justifyContent(FlexAlign.Start).expandSafeArea([SafeAreaType.SYSTEM], [])
   }
 }
 
