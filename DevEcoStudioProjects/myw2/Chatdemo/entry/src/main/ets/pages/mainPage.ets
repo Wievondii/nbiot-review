@@ -293,8 +293,8 @@ struct MineTabComponent {
           Row() { Text('设置').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)'); Blank(); Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)') }.width('100%').height(52).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/settingsPage' }) })
         }.width('100%')
-      }.layoutWeight(1).backgroundColor('#EDEDED')
-    }.width('100%').height('100%').backgroundColor('#EDEDED').justifyContent(FlexAlign.Start)
+      }.layoutWeight(1).backgroundColor('#EDEDED').padding({ top: 0 })
+    }.width('100%').height('100%').backgroundColor('#EDEDED').justifyContent(FlexAlign.Start).expandSafeArea([SafeAreaType.SYSTEM], [], [])
   }
 }
 
