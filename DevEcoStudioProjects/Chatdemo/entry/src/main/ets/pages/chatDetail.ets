@@ -21,11 +21,12 @@ struct ChatDetail {
   }
   build() {
     Column() {
+      // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
       Row() {
-        Text('<').fontSize(22).fontColor('#07C160').margin({ right: 8 }).onClick(() => { router.back() })
-        Text(this.chatName).fontSize(18).fontWeight(FontWeight.Bold).fontColor('#000000')
+        Text('<').fontSize(22).fontColor('rgba(0, 0, 0, 0.9)').margin({ right: 8 }).onClick(() => { router.back() })
+        Text(this.chatName).fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
         Blank()
-      }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#EDEDED')
+      }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
       List({ scroller: this.scroller }) {
         ForEach(this.messageList, (item: MessageItem) => {
           ListItem() {
@@ -34,7 +35,7 @@ struct ChatDetail {
                 Image($r('app.media.' + this.dataManager.getAvatar(item.avatarIndex))).width(40).height(40).borderRadius(6).margin({ right: 10 })
               }
               Text(item.content).fontSize(16).padding({ left: 12, right: 12, top: 10, bottom: 10 })
-                .constraintSize({ maxWidth: '70%' }).backgroundColor(item.isSelf ? '#95EC69' : '#FFFFFF').borderRadius(6).fontColor('#000000')
+                .constraintSize({ maxWidth: '70%' }).backgroundColor(item.isSelf ? '#95EC69' : '#FFFFFF').borderRadius(6).fontColor('rgba(0, 0, 0, 0.9)')
               if (item.isSelf) {
                 Image($r('app.media.headImage')).width(40).height(40).borderRadius(6).margin({ left: 10 })
               }
@@ -42,6 +43,7 @@ struct ChatDetail {
           }
         }, (item: MessageItem) => item.id.toString())
       }.layoutWeight(1).divider({ strokeWidth: 0 }).backgroundColor('#EDEDED')
+      // 底部输入栏：背景#F7F7F7
       Row() {
         TextInput({ text: this.messageInput, placeholder: '输入消息...' }).layoutWeight(1).height(36).fontSize(16).backgroundColor('#FFFFFF').borderRadius(6)
           .onChange((value: string) => { this.messageInput = value })
@@ -60,7 +62,7 @@ struct ChatDetail {
               }, 1000)
             }
           })
-      }.width('100%').height(50).padding({ left: 12, right: 12 }).backgroundColor('#F5F5F5').alignItems(VerticalAlign.Center)
+      }.width('100%').height(50).padding({ left: 12, right: 12 }).backgroundColor('#F7F7F7').alignItems(VerticalAlign.Center)
     }.width('100%').height('100%').backgroundColor('#EDEDED')
   }
 }

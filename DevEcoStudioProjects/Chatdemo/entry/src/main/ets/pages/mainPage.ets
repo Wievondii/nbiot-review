@@ -10,8 +10,9 @@ struct ChatTabComponent {
 
   build() {
     Column() {
+      // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
       Row() {
-        Text('微信').fontSize(20).fontWeight(FontWeight.Bold).fontColor('#000000')
+        Text('微信').fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
         Blank()
       }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
 
@@ -23,16 +24,16 @@ struct ChatTabComponent {
                 .width(48).height(48).borderRadius(6).margin({ right: 12 })
               Column() {
                 Row() {
-                  Text(item.name).fontSize(16).fontColor('#000000')
+                  Text(item.name).fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
                   Blank()
-                  Text(item.time).fontSize(12).fontColor('#B0B0B0')
+                  Text(item.time).fontSize(12).fontColor('rgba(0, 0, 0, 0.3)')
                 }.width('100%')
                 Row() {
-                  Text(item.lastMessage).fontSize(13).fontColor('#999999').maxLines(1)
+                  Text(item.lastMessage).fontSize(14).fontColor('rgba(0, 0, 0, 0.55)').maxLines(1)
                     .textOverflow({ overflow: TextOverflow.Ellipsis }).layoutWeight(1)
                   if (item.unreadCount > 0) {
                     Text(item.unreadCount > 99 ? '99+' : item.unreadCount.toString())
-                      .fontSize(11).fontColor('#FFFFFF').backgroundColor('#FF0000')
+                      .fontSize(11).fontColor('#FFFFFF').backgroundColor('#FA5151')
                       .borderRadius(10).constraintSize({ minWidth: 18 }).height(18)
                       .textAlign(TextAlign.Center).padding({ left: 5, right: 5 }).margin({ left: 8 })
                   }
@@ -50,7 +51,7 @@ struct ChatTabComponent {
               router.pushUrl({ url: 'pages/chatDetail', params: { chatId: item.id, chatName: item.name } })
             })
 
-            Divider().strokeWidth(0.5).color('#F0F0F0')
+            Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
           }, (item: ChatItem) => item.id.toString())
         }.width('100%')
       }.layoutWeight(1).backgroundColor('#EDEDED')
@@ -65,8 +66,9 @@ struct ContactTabComponent {
 
   build() {
     Column() {
+      // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
       Row() {
-        Text('通讯录').fontSize(20).fontWeight(FontWeight.Bold).fontColor('#000000')
+        Text('通讯录').fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
         Blank()
       }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
 
@@ -74,31 +76,31 @@ struct ContactTabComponent {
         Column() {
           Row() {
             Text('👤').fontSize(20).width(36).height(36).textAlign(TextAlign.Center).backgroundColor('#FDCB6E').borderRadius(6).margin({ right: 12 })
-            Text('新的朋友').fontSize(16).fontColor('#000000')
+            Text('新的朋友').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/newFriendPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('👥').fontSize(20).width(36).height(36).textAlign(TextAlign.Center).backgroundColor('#6CC1F5').borderRadius(6).margin({ right: 12 })
-            Text('群聊').fontSize(16).fontColor('#000000')
+            Text('群聊').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/groupChatPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('🏷️').fontSize(20).width(36).height(36).textAlign(TextAlign.Center).backgroundColor('#F5A623').borderRadius(6).margin({ right: 12 })
-            Text('标签').fontSize(16).fontColor('#000000')
+            Text('标签').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/tagPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('📢').fontSize(20).width(36).height(36).textAlign(TextAlign.Center).backgroundColor('#7B68EE').borderRadius(6).margin({ right: 12 })
-            Text('公众号').fontSize(16).fontColor('#000000')
+            Text('公众号').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/officialAccountsPage' }) })
 
@@ -108,7 +110,7 @@ struct ContactTabComponent {
             Row() {
               Image($r('app.media.' + this.dataManager.getAvatar(item.avatarIndex)))
                 .width(40).height(40).borderRadius(6).margin({ right: 12 })
-              Text(item.name).fontSize(16).fontColor('#000000')
+              Text(item.name).fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             }
             .width('100%')
             .height(56)
@@ -116,7 +118,7 @@ struct ContactTabComponent {
             .backgroundColor('#FFFFFF')
             .onClick(() => { router.pushUrl({ url: 'pages/contactDetailPage', params: { contactName: item.name } }) })
 
-            Divider().strokeWidth(0.5).color('#F0F0F0')
+            Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
           }, (item: ContactItem) => item.id.toString())
         }.width('100%')
       }.layoutWeight(1).backgroundColor('#EDEDED')
@@ -128,8 +130,9 @@ struct ContactTabComponent {
 struct DiscoverTabComponent {
   build() {
     Column() {
+      // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
       Row() {
-        Text('发现').fontSize(20).fontWeight(FontWeight.Bold).fontColor('#000000')
+        Text('发现').fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
         Blank()
       }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
 
@@ -137,9 +140,9 @@ struct DiscoverTabComponent {
         Column() {
           Row() {
             Text('🌐').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('朋友圈').fontSize(16).fontColor('#000000')
+            Text('朋友圈').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/momentsPage' }) })
 
@@ -147,19 +150,19 @@ struct DiscoverTabComponent {
 
           Row() {
             Text('📷').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('扫一扫').fontSize(16).fontColor('#000000')
+            Text('扫一扫').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/scanPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('📱').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('摇一摇').fontSize(16).fontColor('#000000')
+            Text('摇一摇').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/shakePage' }) })
 
@@ -167,19 +170,19 @@ struct DiscoverTabComponent {
 
           Row() {
             Text('👁️').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('看一看').fontSize(16).fontColor('#000000')
+            Text('看一看').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/lookPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('🔍').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('搜一搜').fontSize(16).fontColor('#000000')
+            Text('搜一搜').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/searchPage' }) })
 
@@ -187,9 +190,9 @@ struct DiscoverTabComponent {
 
           Row() {
             Text('📍').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('附近的人').fontSize(16).fontColor('#000000')
+            Text('附近的人').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/nearbyPage' }) })
 
@@ -197,19 +200,19 @@ struct DiscoverTabComponent {
 
           Row() {
             Text('🛒').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('购物').fontSize(16).fontColor('#000000')
+            Text('购物').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/shoppingPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('🎮').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('游戏').fontSize(16).fontColor('#000000')
+            Text('游戏').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/gamePage' }) })
 
@@ -217,19 +220,19 @@ struct DiscoverTabComponent {
 
           Row() {
             Text('Ⓜ️').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('小程序').fontSize(16).fontColor('#000000')
+            Text('小程序').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/miniProgramPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('📺').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('视频号').fontSize(16).fontColor('#000000')
+            Text('视频号').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/videoChannelPage' }) })
         }.width('100%')
@@ -242,8 +245,9 @@ struct DiscoverTabComponent {
 struct MineTabComponent {
   build() {
     Column() {
+      // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
       Row() {
-        Text('我').fontSize(20).fontWeight(FontWeight.Bold).fontColor('#000000')
+        Text('我').fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
         Blank()
       }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
 
@@ -252,11 +256,11 @@ struct MineTabComponent {
           Row() {
             Image($r('app.media.headImage')).width(64).height(64).borderRadius(8).margin({ right: 16 })
             Column() {
-              Text('微信用户').fontSize(20).fontWeight(FontWeight.Bold).fontColor('#000000')
-              Text('微信号：wxid_abc123').fontSize(14).fontColor('#999999').margin({ top: 6 })
+              Text('微信用户').fontSize(20).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
+              Text('微信号：wxid_abc123').fontSize(14).fontColor('rgba(0, 0, 0, 0.55)').margin({ top: 6 })
             }.alignItems(HorizontalAlign.Start)
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(100).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/profilePage' }) })
 
@@ -264,49 +268,49 @@ struct MineTabComponent {
 
           Row() {
             Text('💳').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('服务').fontSize(16).fontColor('#000000')
+            Text('服务').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/servicePage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('⭐').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('收藏').fontSize(16).fontColor('#000000')
+            Text('收藏').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/favoritesPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('📷').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('朋友圈').fontSize(16).fontColor('#000000')
+            Text('朋友圈').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/momentsPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('🃏').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('卡包').fontSize(16).fontColor('#000000')
+            Text('卡包').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/cardPackPage' }) })
 
-          Divider().strokeWidth(0.5).color('#F0F0F0')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
 
           Row() {
             Text('😊').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('表情').fontSize(16).fontColor('#000000')
+            Text('表情').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/emojiPage' }) })
 
@@ -314,9 +318,9 @@ struct MineTabComponent {
 
           Row() {
             Text('⚙️').fontSize(20).width(28).height(28).textAlign(TextAlign.Center).margin({ right: 12 })
-            Text('设置').fontSize(16).fontColor('#000000')
+            Text('设置').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)')
             Blank()
-            Text('>').fontSize(16).fontColor('#CCCCCC')
+            Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)')
           }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
           .onClick(() => { router.pushUrl({ url: 'pages/settingsPage' }) })
         }.width('100%')
@@ -347,11 +351,11 @@ struct MainPage {
         Image(this.selectIndex === targetIndex ? selectedImg : normalImg).size({ width: 25, height: 25 })
         if (targetIndex === 0 && this.totalUnread > 0) {
           Text(this.totalUnread > 99 ? '99+' : this.totalUnread.toString())
-            .fontSize(10).fontColor('#FFFFFF').backgroundColor('#FF0000').borderRadius(8)
+            .fontSize(11).fontColor('#FFFFFF').backgroundColor('#FA5151').borderRadius(8)
             .padding({ left: 4, right: 4, top: 1, bottom: 1 }).offset({ x: 8, y: -5 })
         }
       }.width(30).height(30)
-      Text(title).fontColor(this.selectIndex === targetIndex ? '#07C160' : '#6B6B6B').fontSize(11).margin({ top: 2 })
+      Text(title).fontColor(this.selectIndex === targetIndex ? '#07C160' : 'rgba(0, 0, 0, 0.55)').fontSize(11).margin({ top: 2 })
     }.width('100%').height(50).justifyContent(FlexAlign.Center)
   }
 

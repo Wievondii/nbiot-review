@@ -6,25 +6,27 @@ struct PwdLogin {
   @State lock: boolean = false
   build() {
     Column() {
+      // 导航栏：背景#FFFFFF，高度50px
       Row() {
-        Text('<').fontSize(22).fontColor('#000000').margin({ right: 16 }).onClick(() => { router.back() })
-      }.width('100%').height(50).padding({ left: 16 })
-      Text('手机号登录').fontSize(22).fontWeight(FontWeight.Bold).fontColor('#000000').margin({ top: 20, bottom: 30 }).width('100%').textAlign(TextAlign.Center)
+        Text('<').fontSize(22).fontColor('rgba(0, 0, 0, 0.9)').margin({ right: 16 }).onClick(() => { router.back() })
+      }.width('100%').height(50).padding({ left: 16 }).backgroundColor('#FFFFFF')
+      Text('手机号登录').fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)').margin({ top: 20, bottom: 30 }).width('100%').textAlign(TextAlign.Center)
       Column() {
         Row() {
-          Text('+86').fontSize(16).fontColor('#000000').margin({ right: 8 })
+          Text('+86').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)').margin({ right: 8 })
           TextInput({ placeholder: '请输入手机号' }).type(InputType.PhoneNumber).layoutWeight(1).height(44).fontSize(16)
         }.width('90%').height(44).alignItems(VerticalAlign.Center)
-        Divider().strokeWidth(0.5).width('90%')
+        Divider().strokeWidth(0.5).width('90%').color('rgba(0, 0, 0, 0.1)')
         Row() {
-          Text('密码').fontSize(16).fontColor('#000000').width(50)
+          Text('密码').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)').width(50)
           TextInput({ placeholder: '请填写密码' }).type(InputType.Password).layoutWeight(1).height(44).fontSize(16)
             .onChange(val => this.password = val)
         }.width('90%').height(44).margin({ top: 16 }).alignItems(VerticalAlign.Center)
-        Divider().strokeWidth(0.5).width('90%')
+        Divider().strokeWidth(0.5).width('90%').color('rgba(0, 0, 0, 0.1)')
       }.width('100%').alignItems(HorizontalAlign.Center)
       Blank()
-      Button('登录').fontSize(16).fontColor('#FFFFFF').width('85%').height(48).borderRadius(8).backgroundColor('#07C160').enabled(!this.lock)
+      // 主按钮：背景#07C160，文字#FFFFFF，高度48px，圆角8px
+      Button('登录').fontSize(16).fontWeight(FontWeight.Medium).fontColor('#FFFFFF').width('85%').height(48).borderRadius(8).backgroundColor('#07C160').enabled(!this.lock)
         .onClick(() => {
           if (this.lock) return
           this.lock = true

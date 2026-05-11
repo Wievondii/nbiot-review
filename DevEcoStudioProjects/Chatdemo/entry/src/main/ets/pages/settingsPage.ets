@@ -8,23 +8,30 @@ struct SettingsPage {
   build() {
     Stack() {
       Column() {
-        Row() {
-          Text('<').fontSize(22).fontColor('#000000').margin({ right: 16 }).onClick(() => { router.back() })
-          Text('设置').fontSize(18).fontWeight(FontWeight.Bold).fontColor('#000000')
-          Blank()
-        }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+        // 导航栏
+        Column() {
+          Row() {
+            Text('<').fontSize(22).fontColor('rgba(0, 0, 0, 0.9)').margin({ right: 16 }).onClick(() => { router.back() })
+            Text('设置').fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
+            Blank()
+          }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+          Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)')
+        }.width('100%').backgroundColor('#FFFFFF')
         Scroll() {
           Column() {
-            Row() { Text('账号与安全').fontSize(16).fontColor('#000000'); Blank(); Text('>').fontSize(16).fontColor('#CCCCCC') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF').onClick(() => { this.showDialog = true })
+            Row() { Text('账号与安全').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)'); Blank(); Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF').onClick(() => { this.showDialog = true })
             Column() {}.width('100%').height(8).backgroundColor('#EDEDED')
-            Row() { Text('新消息通知').fontSize(16).fontColor('#000000'); Blank(); Text('>').fontSize(16).fontColor('#CCCCCC') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
-            Row() { Text('隐私').fontSize(16).fontColor('#000000'); Blank(); Text('>').fontSize(16).fontColor('#CCCCCC') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
-            Row() { Text('通用').fontSize(16).fontColor('#000000'); Blank(); Text('>').fontSize(16).fontColor('#CCCCCC') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+            Row() { Text('新消息通知').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)'); Blank(); Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+            Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)').margin({ left: 16 })
+            Row() { Text('隐私').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)'); Blank(); Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+            Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)').margin({ left: 16 })
+            Row() { Text('通用').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)'); Blank(); Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
             Column() {}.width('100%').height(8).backgroundColor('#EDEDED')
-            Row() { Text('帮助与反馈').fontSize(16).fontColor('#000000'); Blank(); Text('>').fontSize(16).fontColor('#CCCCCC') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
-            Row() { Text('关于微信').fontSize(16).fontColor('#000000'); Blank(); Text('>').fontSize(16).fontColor('#CCCCCC') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+            Row() { Text('帮助与反馈').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)'); Blank(); Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+            Divider().strokeWidth(0.5).color('rgba(0, 0, 0, 0.1)').margin({ left: 16 })
+            Row() { Text('关于微信').fontSize(16).fontColor('rgba(0, 0, 0, 0.9)'); Blank(); Text('>').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)') }.width('100%').height(56).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
             Column() {}.width('100%').height(8).backgroundColor('#EDEDED')
-            Row() { Text('退出登录').fontSize(16).fontColor('#FA5151').width('100%').textAlign(TextAlign.Center) }.width('100%').height(56).backgroundColor('#FFFFFF').onClick(() => { router.replaceUrl({ url: 'pages/login' }) })
+            Row() { Text('退出登录').fontSize(16).fontWeight(FontWeight.Medium).fontColor('#FA5151').width('100%').textAlign(TextAlign.Center) }.width('100%').height(56).backgroundColor('#FFFFFF').onClick(() => { router.replaceUrl({ url: 'pages/login' }) })
           }.width('100%')
         }.layoutWeight(1).backgroundColor('#EDEDED')
       }.width('100%').height('100%').backgroundColor('#EDEDED')

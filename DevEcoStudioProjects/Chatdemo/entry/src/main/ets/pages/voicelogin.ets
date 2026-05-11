@@ -11,15 +11,16 @@ struct VoiceLogin {
   aboutToDisappear() { if (this.timer) { clearInterval(this.timer); this.timer = null } }
   build() {
     Column() {
+      // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
       Row() {
-        Text('<').fontSize(22).fontColor('#000000').margin({ right: 16 }).onClick(() => { router.back() })
-        Text('用声音锁登录').fontSize(18).fontWeight(FontWeight.Bold).fontColor('#000000')
+        Text('<').fontSize(22).fontColor('rgba(0, 0, 0, 0.9)').margin({ right: 16 }).onClick(() => { router.back() })
+        Text('用声音锁登录').fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
         Blank()
       }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
       Column() {
-        Text('请匀速读出以下数字').fontSize(16).fontColor('#666666').margin({ bottom: 30 })
-        Text(this.randomNum).fontSize(36).fontWeight(FontWeight.Bold).fontColor('#000000').letterSpacing(8).margin({ bottom: 60 })
-        Text(this.isPressed ? '正在识别...' : '按住 说话').fontSize(16).fontColor('#999999').margin({ bottom: 20 })
+        Text('请匀速读出以下数字').fontSize(16).fontColor('rgba(0, 0, 0, 0.55)').margin({ bottom: 30 })
+        Text(this.randomNum).fontSize(36).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)').letterSpacing(8).margin({ bottom: 60 })
+        Text(this.isPressed ? '正在识别...' : '按住 说话').fontSize(16).fontColor('rgba(0, 0, 0, 0.3)').margin({ bottom: 20 })
         Text('🎤').fontSize(32).width(80).height(80).textAlign(TextAlign.Center)
           .backgroundColor(this.isPressed ? '#07C160' : '#E0E0E0').borderRadius(40)
           .onTouch((event) => {
