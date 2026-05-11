@@ -847,9 +847,71 @@ pages/mainPage（4个Tab）
 - ✅ 分割线统一：0.5px rgba(0, 0, 0, 0.1)
 - ✅ 退出登录：文字#FA5151、字重Medium
 - ✅ 业务逻辑未改动：所有router跳转、数据管理、交互逻辑保持不变
+---
+
+✅ 开发完成，等待审查
 
 ---
-✅ 开发完成，等待审查
+
+### Dev: 声音锁Bug修复
+
+**问题描述**：使用声音锁登录后页面闪烁卡顿，密码登录正常
+
+**根本原因分析**：
+1. **定时器状态更新导致闪烁**：`setInterval` 每50ms更新 `@State progress`，触发UI重渲染。当 progress >= 100 调用 `router.replaceUrl` 时，页面跳转和状态更新产生竞态条件
+2. **TouchType.Up 事件在跳转期间执行**：用户松手时会设置 `isPressed = false` 和 `progress = 0`，这些状态变化在页面跳转过程中导致额外的UI重渲染和闪烁
+3. **缺少防重复跳转保护**：没有防止多次调用 `router.replaceUrl` 的机制
+
+**对比 pwdLogin.ets**：
+- pwdLogin 只在按钮点击时调用一次 `router.replaceUrl`，无定时器和状态更新竞态问题
+- voicelogin 有 `setInterval` 持续更新状态，与页面跳转产生冲突
+
+**修复方案**：
+1. 添加 `isNavigating` 标志防止重复跳转
+2. 提取 `cleanupAndNavigate()` 方法，确保定时器清理在 `replaceUrl` 之前完成
+3. 在 `TouchType.Down` 和 `TouchType.Up` 事件中检查 `isNavigating` 状态，跳转期间忽略所有状态更新
+4. 优化 `aboutToDisappear` 清理逻辑
+
+**变更文件**：
+- `entry/src/main/ets/pages/voicelogin.ets` — 添加防重复跳转机制，优化定时器清理和事件处理
+
+**关键代码改动**：
+```typescript
+// 新增：防止重复跳转的标志
+private isNavigating: boolean = false
+
+// 新增：清理定时器并准备跳转的方法
+private cleanupAndNavigate() {
+  if (this.timer) {
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+  if (!this.isNavigating) {
+    this.isNavigating = true;
+    router.replaceUrl({ url: 'pages/mainPage' });
+  }
+}
+
+// 修改：TouchType.Down 事件添加跳转状态检查
+if (this.isNavigating) return;  // 跳转中忽略新触摸
+
+// 修改：TouchType.Up 事件添加跳转状态检查
+if (this.isNavigating) return;  // 跳转中忽略松手事件
+```
+
+**验收自查**：
+- ✅ 定时器在 replaceUrl 调用前完全清理
+- ✅ 防止重复跳转机制生效（isNavigating 标志）
+- ✅ 跳转期间忽略所有触摸事件，避免状态变化导致闪烁
+- ✅ 页面销毁时定时器正确清理
+- ✅ 业务逻辑保持不变：进度达到100%后跳转到 mainPage
+- ✅ 代码能通过编译（ArkTS 语法正确）
+
+**备注**：
+- 建议测试员重点关注：声音锁登录后页面是否还有闪烁、进度动画是否流畅
+- 此修复不影响密码登录流程（pwdLogin.ets 无定时器）
+
+---
 
 ## 🔍 第2轮审查
 
@@ -983,6 +1045,85 @@ pages/mainPage（4个Tab）
 
 ### 审查结论
 全部14个页面（5个有实际变更 + 9个已符合规范）均通过UI/UX规范审查。颜色、字体、间距、组件样式全部符合第2轮计划中定义的weui设计规范。业务逻辑未受任何影响。代码质量达标，可进入测试阶段。
+
+---
+
+### Review: 声音锁修复
+
+**审查范围**：`entry/src/main/ets/pages/voicelogin.ets` — 声音锁登录闪烁bug修复
+
+**审查结论**：✅ 通过
+
+#### 1. isNavigating 标志检查 ✅
+
+| 检查项 | 位置 | 代码 | 结论 |
+|--------|------|------|------|
+| 初始化 | 第9行 | `private isNavigating: boolean = false` | ✅ 正确初始化为 false |
+| TouchType.Down 检查 | 第48行 | `if (this.isNavigating) return;` | ✅ 跳转期间忽略新触摸 |
+| TouchType.Up 检查 | 第60行 | `if (this.isNavigating) return;` | ✅ 跳转期间忽略松手事件 |
+| 设置标志 | 第27行 | `this.isNavigating = true` | ✅ 跳转前设置，防止重复调用 |
+
+**结论**：isNavigating 在所有关键路径（Down、Up、cleanupAndNavigate）上正确使用，有效防止重复跳转和状态更新导致的闪烁。
+
+#### 2. cleanupAndNavigate() 方法检查 ✅
+
+```typescript
+// 第20-30行
+private cleanupAndNavigate() {
+  if (this.timer) {
+    clearInterval(this.timer);  // ✅ 先清理定时器
+    this.timer = null;          // ✅ 置空引用
+  }
+  if (!this.isNavigating) {     // ✅ 检查标志防止重复调用
+    this.isNavigating = true;   // ✅ 设置标志
+    router.replaceUrl({ url: 'pages/mainPage' });  // ✅ 最后跳转
+  }
+}
+```
+
+| 检查项 | 结论 |
+|--------|------|
+| 定时器清理顺序 | ✅ clearInterval 在 replaceUrl 之前执行 |
+| 防重复调用 | ✅ isNavigating 检查有效 |
+| 定时器引用置空 | ✅ this.timer = null 防止悬空引用 |
+| aboutToDisappear 清理 | ✅ 第12-18行有兜底清理逻辑 |
+
+#### 3. 闪烁风险分析 ✅
+
+| 风险点 | 原因 | 修复方式 | 结论 |
+|--------|------|----------|------|
+| 定时器状态更新 | setInterval 每50ms更新 progress 触发重渲染 | progress >= 100 时调用 cleanupAndNavigate() 清除定时器 | ✅ 已消除 |
+| TouchType.Up 状态变化 | 松手时设置 isPressed=false 和 progress=0 | isNavigating 检查后直接 return，不执行状态重置 | ✅ 已消除 |
+| 重复跳转 | 多次调用 router.replaceUrl | isNavigating 标志防止重复调用 | ✅ 已消除 |
+| 定时器泄漏 | 页面销毁时定时器未清理 | aboutToDisappear() 中 clearInterval | ✅ 已消除 |
+
+**竞态条件分析**：
+- 定时器回调执行 cleanupAndNavigate() → clearInterval + isNavigating=true + replaceUrl
+- 若此时触发 TouchType.Up → isNavigating 检查通过 → return，不执行状态重置
+- **结论**：单线程事件循环下无竞态条件，逻辑正确
+
+#### 4. 代码质量检查
+
+| 检查项 | 结论 |
+|--------|------|
+| ArkTS 语法正确 | ✅ |
+| 业务逻辑保持不变 | ✅ 进度100%后跳转到 mainPage |
+| 颜色规范符合 | ✅ rgba 格式统一（第35/36/40/41/42行） |
+| 注释充分 | ✅ 关键逻辑有中文注释说明 |
+| 无冗余代码 | ✅ |
+| 无安全隐患 | ✅ |
+
+#### 5. 与 pwdLogin.ets 对比
+
+| 对比项 | pwdLogin.ets | voicelogin.ets |
+|--------|--------------|----------------|
+| 跳转方式 | 按钮点击 → replaceUrl | 定时器进度100% → cleanupAndNavigate() → replaceUrl |
+| 竞态风险 | 无（单次点击） | 已修复（isNavigating 标志） |
+| 定时器 | 无 | 有，已正确清理 |
+
+### 审查结论
+
+声音锁登录闪烁bug修复**通过审查**。isNavigating 标志在所有关键路径上正确使用，cleanupAndNavigate() 方法确保定时器清理在 replaceUrl 之前完成，闪烁风险已全部消除。代码质量达标，可提交。
 
 ---
 

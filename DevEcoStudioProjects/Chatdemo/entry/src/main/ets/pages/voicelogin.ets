@@ -6,9 +6,28 @@ struct VoiceLogin {
   @State isPressed: boolean = false
   @State progress: number = 0
   private timer: number | null = null
+  private isNavigating: boolean = false  // 防止重复跳转的标志
   generate8DigitRandom(): string { return Math.floor(Math.random() * 100000000).toString().padStart(8, '0') }
   aboutToAppear() { this.randomNum = this.generate8DigitRandom() }
-  aboutToDisappear() { if (this.timer) { clearInterval(this.timer); this.timer = null } }
+  aboutToDisappear() {
+    // 页面销毁时彻底清理定时器
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+  // 清理定时器并准备跳转
+  private cleanupAndNavigate() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    // 防止重复调用 replaceUrl
+    if (!this.isNavigating) {
+      this.isNavigating = true;
+      router.replaceUrl({ url: 'pages/mainPage' });
+    }
+  }
   build() {
     Column() {
       // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
@@ -25,13 +44,26 @@ struct VoiceLogin {
           .backgroundColor(this.isPressed ? '#07C160' : '#E0E0E0').borderRadius(40)
           .onTouch((event) => {
             if (event.type === TouchType.Down) {
-              this.isPressed = true; this.progress = 0
+              // 如果已经在跳转中，忽略新的触摸
+              if (this.isNavigating) return;
+              this.isPressed = true;
+              this.progress = 0;
               this.timer = setInterval(() => {
-                this.progress += 2
-                if (this.progress >= 100) { if (this.timer) { clearInterval(this.timer); this.timer = null }; router.replaceUrl({ url: 'pages/mainPage' }) }
-              }, 50)
+                this.progress += 2;
+                if (this.progress >= 100) {
+                  // 先清理定时器，再跳转，避免状态更新导致闪烁
+                  this.cleanupAndNavigate();
+                }
+              }, 50);
             } else if (event.type === TouchType.Up) {
-              if (this.timer) { clearInterval(this.timer); this.timer = null }; this.isPressed = false; this.progress = 0
+              // 如果已经在跳转中，忽略松手事件，避免状态变化导致闪烁
+              if (this.isNavigating) return;
+              if (this.timer) {
+                clearInterval(this.timer);
+                this.timer = null;
+              }
+              this.isPressed = false;
+              this.progress = 0;
             }
           })
         if (this.progress > 0) { Text(this.progress.toString() + '%').fontSize(14).fontColor('#07C160').margin({ top: 16 }) }
