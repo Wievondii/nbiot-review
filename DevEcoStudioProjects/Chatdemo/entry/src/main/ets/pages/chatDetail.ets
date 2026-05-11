@@ -1,13 +1,13 @@
-import { DataManager, MessageItem } from '../util/DataManager';
+import { DataManager, MessageItem, ChatItem } from '../util/DataManager';
 import router from '@ohos.router';
 @Entry
 @Component
 struct ChatDetail {
   @State chatId: number = 0
   @State chatName: string = ''
+  @State avatarIndex: number = 0
   @State messageInput: string = ''
   @State messageList: MessageItem[] = []
-  @State showMore: boolean = false
   private dataManager: DataManager = DataManager.getInstance()
   private scroller: Scroller = new Scroller()
   private autoReplies: string[] = ['好的，我知道了', '没问题', '收到，谢谢', '嗯嗯', '好的好的', '可以啊']
@@ -15,35 +15,35 @@ struct ChatDetail {
     const params = router.getParams() as Record<string, string | number> | undefined
     this.chatId = params?.chatId as number ?? 0
     this.chatName = params?.chatName as string ?? ''
+    const chat: ChatItem | undefined = this.dataManager.getChatList().find((c: ChatItem) => c.id === this.chatId)
+    if (chat) { this.avatarIndex = chat.avatarIndex }
     if (this.chatId) {
       this.messageList = this.dataManager.getMessages(this.chatId)
     }
   }
   build() {
     Column() {
-      // 导航栏：背景#FFFFFF，高度50px，标题18px Bold
       Row() {
-        Text('<').fontSize(22).fontColor('rgba(0, 0, 0, 0.9)').margin({ right: 8 }).onClick(() => { router.back() })
-        Text(this.chatName).fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
+        Text('<').fontSize(22).fontColor('#07C160').margin({ right: 8 }).onClick(() => { router.back() })
+        Text(this.chatName + (this.chatId === 2 || this.chatId === 4 || this.chatId === 6 ? ' (' + (this.chatId === 2 ? '5' : this.chatId === 4 ? '4' : '3') + ')' : '')).fontSize(18).fontWeight(FontWeight.Bold).fontColor('rgba(0, 0, 0, 0.9)')
         Blank()
-      }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#FFFFFF')
+      }.width('100%').height(50).padding({ left: 16, right: 16 }).backgroundColor('#EDEDED')
       List({ scroller: this.scroller }) {
         ForEach(this.messageList, (item: MessageItem) => {
           ListItem() {
             Row() {
               if (!item.isSelf) {
-                Image($r('app.media.' + this.dataManager.getAvatar(item.avatarIndex))).width(40).height(40).borderRadius(6).margin({ right: 10 })
+                Image($r('app.media.' + this.dataManager.getAvatar(this.avatarIndex))).width(40).height(40).borderRadius(6).margin({ right: 10 })
               }
               Text(item.content).fontSize(16).padding({ left: 12, right: 12, top: 10, bottom: 10 })
                 .constraintSize({ maxWidth: '70%' }).backgroundColor(item.isSelf ? '#95EC69' : '#FFFFFF').borderRadius(6).fontColor('rgba(0, 0, 0, 0.9)')
               if (item.isSelf) {
-                Image($r('app.media.headImage')).width(40).height(40).borderRadius(6).margin({ left: 10 })
+                Image($r('app.media.avatar1')).width(40).height(40).borderRadius(6).margin({ left: 10 })
               }
             }.width('100%').justifyContent(item.isSelf ? FlexAlign.End : FlexAlign.Start)
           }
         }, (item: MessageItem) => item.id.toString())
       }.layoutWeight(1).divider({ strokeWidth: 0 }).backgroundColor('#EDEDED')
-      // 底部输入栏：背景#F7F7F7
       Row() {
         TextInput({ text: this.messageInput, placeholder: '输入消息...' }).layoutWeight(1).height(36).fontSize(16).backgroundColor('#FFFFFF').borderRadius(6)
           .onChange((value: string) => { this.messageInput = value })
@@ -54,9 +54,10 @@ struct ChatDetail {
               this.messageList = this.dataManager.getMessages(this.chatId)
               this.messageInput = ''
               const cid = this.chatId
+              const avIdx = this.avatarIndex
               setTimeout(() => {
                 const reply = this.autoReplies[Math.floor(Math.random() * this.autoReplies.length)]
-                this.dataManager.addMessage(cid, { id: this.messageList.length + 1, content: reply, time: new Date().toLocaleTimeString().substring(0, 5), isSelf: false, avatarIndex: cid % 3 })
+                this.dataManager.addMessage(cid, { id: this.messageList.length + 1, content: reply, time: new Date().toLocaleTimeString().substring(0, 5), isSelf: false, avatarIndex: avIdx })
                 this.messageList = this.dataManager.getMessages(cid)
                 this.scroller.scrollEdge(Edge.Bottom)
               }, 1000)
