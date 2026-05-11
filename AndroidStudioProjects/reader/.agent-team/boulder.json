@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "active_plan": null,
+  "current_round": 1,
+  "started_at": "2026-05-11",
+  "last_activity": "2026-05-11",
+  "status": "in_progress",
+  "agents": {
+    "planner": { "status": "completed", "agent_id": "ac17b81579de7c19e" },
+    "developer": { "status": "completed", "instances": ["aa512e7805eacbda3"] },
+    "reviewer": { "status": "idle", "agent_id": null },
+    "tester": { "status": "idle", "agent_id": null }
+  },
+  "agent_ids": {
+    "planner": "ac17b81579de7c19e",
+    "developers": { "TeamFlowVerifier": "aa512e7805eacbda3" },
+    "reviewer": null,
+    "tester": null
+  },
+  "errors": [],
+  "learnings": []
+}
