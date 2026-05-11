@@ -1,0 +1,11 @@
+{
+  "project": "reader",
+  "status": "in_progress",
+  "current_round": 1,
+  "goal": "测试 Agent Team 流程是否可以正常跑通",
+  "agent_ids": {
+    "planner": "a598b23d51b5fb489",
+    "developer_main": "a2ba7034f60d217a2"
+  },
+  "history": []
+}
