@@ -224,4 +224,9 @@ export class UIManager {
     this.hud.mount();
     this.hud.update(data);
   }
+
+  /** 隐藏并卸载 HUD */
+  hideHUD() {
+    this.hud.unmount();
+  }
 }

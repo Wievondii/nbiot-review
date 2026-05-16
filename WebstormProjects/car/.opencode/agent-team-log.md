@@ -371,7 +371,155 @@ export interface GameLoop {
 ---
 
 ## 🧪 第1轮测试
-<!-- 测试员：精简通过/失败和 Bug 列表 -->
+
+### 整体评估
+**❌ 需修复后重测** — 发现 1 个严重 Bug + 5 个一般/轻微 Bug
+
+### 测试方法
+- **Level 1（静态分析）**: ✅ 全部完成
+  - `node --check` 语法检查：30/30 文件通过
+  - 接口调用关系表验证：34/36 项通过（2 项失败）
+  - 事件链路完整性检查：全部通过
+  - 状态机转换完整性检查：通过
+  - 初始化顺序检查：通过
+  - 死代码检查：发现 2 处
+- **Level 2（运行时测试）**: ⚠️ 无法执行（需要浏览器环境，当前环境不可用）
+
+### 验收标准测试
+
+| 验收标准 | 结果 | 备注 |
+|---------|------|------|
+| 游戏可以从开始菜单进入比赛状态 | ✅ | 状态机转换链路完整：menu→countdown→racing |
+| 赛车可以通过键盘控制加速、刹车、转向、漂移 | ✅ | InputMapper→PhysicsEngine 链路完整 |
+| 赛车与赛道边界发生碰撞时有正确的物理反馈 | ✅ | SAT碰撞检测+resolveCollision 链路完整 |
+| 漂移系统工作正常，漂移时有视觉和音效反馈 | ❌ | 漂移事件发射链路完整，但 **音效不工作**（Bug #1） |
+| 赛道检查点系统正确记录圈数 | ✅ | CheckpointSystem 集成完整 |
+| HUD 实时显示速度、圈数、时间 | ✅ | HUD.update() 每帧调用 |
+| 倒计时系统正常工作 | ✅ | Countdown→EventBus→GameLoop 链路完整 |
+| 音效系统播放引擎声、漂移声、碰撞声 | ❌ | 引擎声/碰撞声正常，**漂移声/比赛音乐不工作**（Bug #1） |
+| 游戏循环稳定 60FPS，无明显卡顿 | ⏭️ | 需 Level 2 运行时验证 |
+| 所有接口调用链路完整 | ❌ | 发现 2 处断裂（Bug #1, Bug #2） |
+
+### 模块测试结果
+
+| 模块 | Tester | 结论 | Bug 数 |
+|------|--------|------|--------|
+| 核心模块 (Dev-1) | Tester | ❌ | 2 |
+| 物理引擎 (Dev-2) | Tester | ❌ | 2 |
+| 渲染引擎 (Dev-3) | Tester | ✅ | 0 |
+| 输入控制 (Dev-4) | Tester | ⚠️ | 1 |
+| 赛道系统 (Dev-5) | Tester | ✅ | 0 |
+| 音效系统 (Dev-6) | Tester | ✅ | 0 |
+| UI系统 (Dev-7) | Tester | ⚠️ | 1 |
+
+### Bug 清单
+
+**Bug #1：比赛音乐曲目名称不匹配，导致比赛中和赛后无背景音乐**
+- **错误类型**：B. 多模块协调错误
+- **严重程度**：🔴严重
+- **现象**：GameLoop 在 `onEnter('racing')` 和 `onEnter('finished')` 中调用 `this.audio.playMusic('racing')`，但 AudioManager.playMusic() 只识别 `'menu'` 和 `'race'` 两个曲目名称。传入 `'racing'` 时不匹配任何分支，音乐不会播放
+- **预期**：比赛状态和完成状态应播放背景音乐
+- **复现步骤**：
+  1. 游戏从菜单进入倒计时
+  2. 倒计时完成后进入 racing 状态
+  3. 听不到背景音乐
+  4. 完成比赛进入 finished 状态
+  5. 仍然听不到背景音乐
+- **关联文件**：`src/core/GameLoop.js` L146, L171；`src/audio/AudioManager.js` L229-241
+- **处置路径**：
+  - B. 多模块协调错误 → 返回 Planner 协调接口名称
+  - 建议修复：将 GameLoop 中的 `'racing'` 改为 `'race'`
+
+**Bug #2：PhysicsEngine._driftEvents 死代码/内存泄漏**
+- **错误类型**：A. 模块内错误
+- **严重程度**：🟡一般
+- **现象**：PhysicsEngine 内部维护 `_driftEvents` 队列，在 `updateCar()` 中检测漂移状态变化时推入事件。但 GameLoop 从未调用 `consumeDriftEvents()` 消费这些事件，而是直接在 GameLoop 层面检测漂移状态变化并发射 EventBus 事件。结果 `_driftEvents` 数组在每帧物理更新后不断增长，永远不会被清空
+- **预期**：要么 GameLoop 调用 `consumeDriftEvents()` 消费事件，要么 PhysicsEngine 不维护此队列
+- **关联文件**：`src/physics/PhysicsEngine.js` L151, L276-279, L460-464；`src/core/GameLoop.js` L366-376
+- **责任 Developer**：Dev-2
+- **处置路径**：A. 模块内错误 → 返回 Dev-2 修复
+
+**Bug #3：暂停键映射不一致**
+- **错误类型**：A. 模块内错误
+- **严重程度**：🟡一般
+- **现象**：Keyboard.js 中 `KeyP: 'pause'` 映射 P 键为暂停，但 Menu.js 操作说明显示 "ESC = Pause"。用户按 ESC 键不会触发暂停
+- **预期**：操作说明与实际键位映射一致
+- **关联文件**：`src/input/Keyboard.js` L21；`src/ui/Menu.js` L337
+- **责任 Developer**：Dev-4 / Dev-7
+- **处置路径**：A. 模块内错误 → 返回 Dev-4 或 Dev-7 修复
+
+**Bug #4：HUD 在比赛完成后未隐藏**
+- **错误类型**：A. 模块内错误
+- **严重程度**：🟢轻微
+- **现象**：游戏进入 `finished` 状态时，`onEnter('finished')` 只显示结果覆盖层，但没有隐藏 HUD。HUD 元素仍然在 DOM 中可见（虽然被结果覆盖层遮挡）
+- **预期**：进入 finished 状态时隐藏 HUD
+- **关联文件**：`src/core/GameLoop.js` L169-172
+- **责任 Developer**：Dev-1
+- **处置路径**：A. 模块内错误 → 返回 Dev-1 修复
+
+**Bug #5：angularVelocity 缺少上限钳制**
+- **错误类型**：A. 模块内错误
+- **严重程度**：🟢轻微
+- **现象**：`car.angularVelocity` 在碰撞后可能累积到很大值，虽然每帧有阻尼衰减（`*= 1 - ANGULAR_DAMPING * dt * 60`），但没有上限钳制。极端情况下赛车可能在一帧内旋转过度
+- **预期**：对角速度设置上限，如 `Math.abs(car.angularVelocity) > Math.PI * 2` 时截断
+- **关联文件**：`src/physics/PhysicsEngine.js` L341
+- **责任 Developer**：Dev-2
+- **处置路径**：A. 模块内错误 → 返回 Dev-2 修复
+
+**Bug #6：Touch.js 模块级样式注入**
+- **错误类型**：A. 模块内错误
+- **严重程度**：🟢轻微
+- **现象**：Touch.js 在模块加载时立即向 `document.head` 注入 `<style>` 元素，无论设备是否支持触摸输入。在桌面端浏览器中，这些样式永远不会被使用
+- **预期**：样式注入应在 `TouchInput.init()` 中进行，仅在确认需要触摸输入时才注入
+- **关联文件**：`src/input/Touch.js` L14-129, L199-206
+- **责任 Developer**：Dev-4
+- **处置路径**：A. 模块内错误 → 返回 Dev-4 修复
+
+### 接口调用关系表验证结果
+
+| 被调接口 | 提供方 | 调用方 | 状态 |
+|---------|--------|--------|------|
+| `update(dt, inputState)` | Dev-2 | Dev-1 | ✅ |
+| `render(cars, track, state)` | Dev-3 | Dev-1 | ✅ |
+| `getState()` | Dev-4 | Dev-1 | ✅ |
+| `applyForce/applyTorque` | Dev-2 | Dev-4 | ✅ |
+| `getCarState(id)` | Dev-2 | Dev-3 | ✅ |
+| `playEngine(speed)` | Dev-6 | Dev-1 | ✅ |
+| `playDrift/Collision` | Dev-6 | Dev-2 | ✅（通过 EventBus） |
+| `loadTrack(name)` | Dev-5 | Dev-1 | ✅ |
+| `updateHUD(data)` | Dev-7 | Dev-1 | ✅ |
+| `playMusic(track)` | Dev-6 | Dev-1 | ❌ **参数不匹配** |
+
+### 事件链路验证
+
+| 事件 | 发射方 | 监听方 | 状态 |
+|------|--------|--------|------|
+| EVENT_COLLISION | GameLoop | AudioManager | ✅ |
+| EVENT_DRIFT_START | GameLoop | AudioManager | ✅ |
+| EVENT_DRIFT_END | GameLoop | (无监听) | ⚠️ 无监听方 |
+| EVENT_LAP_COMPLETE | GameLoop | AudioManager | ✅ |
+| EVENT_RACE_COMPLETE | GameLoop | GameLoop(状态切换) | ✅ |
+| EVENT_COUNTDOWN_COMPLETE | UIManager | GameLoop | ✅ |
+| EVENT_CHECKPOINT_PASSED | GameLoop | (调试用) | ✅ |
+
+### 状态机转换验证
+
+| 转换 | 触发条件 | 状态 |
+|------|---------|------|
+| menu → countdown | 用户点击开始 | ✅ |
+| countdown → racing | 倒计时完成 | ✅ |
+| racing ↔ paused | P键切换 | ✅ |
+| racing → finished | 比赛完成 | ✅ |
+| finished → menu | restart 动作 | ✅ |
+
+### 初始化顺序验证
+
+```
+AudioManager.init() → TrackLoader.loadTrack() → CheckpointSystem() → 
+PhysicsEngine() → RenderEngine.init() → InputMapper.init() → 
+UIManager() → GameLoop(deps).init() → GameLoop.start()
+```
+✅ 无循环等待，所有模块依赖方向一致
 
 ---
 
@@ -395,3 +543,66 @@ export interface GameLoop {
 
 ### 学习成果
 <!-- PM 在轮次结束时总结 -->
+
+---
+
+## 🔍 第1轮审查（Bug 修复最终验证）
+
+### 审查结论
+**✅ 通过** — 6 个 Bug 全部修复正确，代码已提交
+
+### Bug 修复验证结果
+
+| # | Bug 描述 | 严重度 | 修复 Developer | 验证结果 | 说明 |
+|---|---------|--------|---------------|---------|------|
+| 1 | `playMusic('racing')` → `'race'` | 🔴严重 | Dev-1 | ✅ 通过 | GameLoop.js L146、L172 均改为 `'race'`，与 AudioManager 支持的曲目名一致 |
+| 2 | 移除 `_driftEvents` 死代码 | 🟡一般 | Dev-2 | ✅ 通过 | `_driftEvents`、`consumeDriftEvents()`、`wasDrifting` 全部移除，PhysicsEngine 从 567 行减至 548 行 |
+| 3 | 暂停键改为 ESC | 🟡一般 | Dev-4 | ✅ 通过 | Keyboard.js L21 `Escape: 'pause'`，L145 `isJustPressed('Escape')`，注释同步更新 |
+| 4 | HUD 完成时隐藏 | 🟢轻微 | Dev-1 | ✅ 通过 | GameLoop.js L171 调用 `this.ui.hideHUD()`，UIManager.js L229-231 新增 `hideHUD()` 委托 `hud.unmount()` |
+| 5 | angularVelocity 上限钳制 | 🟢轻微 | Dev-2 | ✅ 通过 | PhysicsEngine.js L77 新增 `MAX_ANGULAR_VELOCITY = 10`，L330-334 阻尼后钳制，L546 新增 `clamp()` 工具函数 |
+| 6 | Touch.js 样式延迟注入 | 🟢轻微 | Dev-4 | ✅ 通过 | 模块顶层不再注入样式，改为 `_injectStyles()` 方法在 `init()` 中调用，使用 `_stylesInjected` 静态标志保证全局仅注入一次 |
+
+### 详细验证
+
+#### Bug #1: playMusic('racing') → 'race'
+- **GameLoop.js L146**: `this.audio.playMusic('race')` ✅
+- **GameLoop.js L172**: `this.audio.playMusic('race')` ✅
+- **AudioManager.js**: 支持 `'menu'` 和 `'race'` 两个曲目名 ✅
+- **结论**: 修复正确，参数匹配 AudioManager 支持的曲目名
+
+#### Bug #2: 移除 _driftEvents 死代码
+- **grep 搜索**: `_driftEvents`、`consumeDriftEvents`、`wasDrifting` 在 PhysicsEngine.js 中均无匹配 ✅
+- **constructor()**: 不再初始化 `_driftEvents` 数组 ✅
+- **updateCar()**: 不再记录漂移状态变化到事件队列 ✅
+- **consumeDriftEvents()**: 方法已完全移除 ✅
+- **结论**: 死代码和内存泄漏源已彻底清除
+
+#### Bug #3: 暂停键改为 ESC
+- **Keyboard.js L21**: `Escape: 'pause'` ✅
+- **Keyboard.js L145**: `isJustPressed('Escape')` ✅
+- **Keyboard.js L4**: 注释更新为 "ESC 键" ✅
+- **Keyboard.js L141**: 注释更新为 "暂停键（ESC）" ✅
+- **结论**: 键位映射与 Menu.js 操作说明一致
+
+#### Bug #4: HUD 完成时隐藏
+- **GameLoop.js L171**: `this.ui.hideHUD()` ✅
+- **UIManager.js L229-231**: `hideHUD()` 方法委托 `this.hud.unmount()` ✅
+- **HUD.js L98**: `unmount()` 方法存在 ✅
+- **结论**: 进入 finished 状态时 HUD 被正确卸载
+
+#### Bug #5: angularVelocity 上限钳制
+- **PhysicsEngine.js L77**: `const MAX_ANGULAR_VELOCITY = 10` ✅
+- **PhysicsEngine.js L330-334**: `car.angularVelocity = clamp(car.angularVelocity, -MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY)` ✅
+- **PhysicsEngine.js L546**: `function clamp(val, min, max)` 工具函数 ✅
+- **安全边界**: 10 rad/s ≈ 573°/s，正常驾驶 < 3 rad/s，仅防极端情况 ✅
+- **结论**: 角速度上限钳制正确，防止数值爆炸
+
+#### Bug #6: Touch.js 样式延迟注入
+- **Touch.js L14**: `TOUCH_STYLES` 保留为纯字符串常量 ✅
+- **Touch.js L197-203**: `_injectStyles()` 方法，使用 `TouchInput._stylesInjected` 静态标志 ✅
+- **Touch.js L212**: `init()` 中调用 `this._injectStyles()` ✅
+- **模块顶层**: 不再有 `document.head.appendChild(STYLES)` ✅
+- **结论**: 样式仅在触摸输入初始化时注入一次，桌面端无开销
+
+### 审查结论
+6 个 Bug 修复全部验证通过，修复方案正确、完整，无引入新问题。代码质量良好，可以进入测试阶段。

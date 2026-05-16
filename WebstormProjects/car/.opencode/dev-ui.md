@@ -62,6 +62,12 @@
 
 ## 修复记录
 
+### Bug #3：暂停键显示不一致
+- **错误类型**：A. 模块内错误
+- **原因分析**：Menu.js 操作说明中暂停键显示为 "ESC"，但 Keyboard.js 第 21 行映射为 `KeyP: 'pause'`（P 键），导致说明与实控不一致。Dev-4 将把 Keyboard.js 改为 ESC 映射。
+- **确认结果**：Menu.js 第 337 行已正确显示 `{ key: 'ESC', action: 'Pause' }`，无需修改。
+- **改动内容**：无 — Menu.js 已正确显示 ESC 为暂停键。
+
 ### Blocker #1：赛道名称不匹配
 - **错误类型**：A. 模块内错误
 - **原因分析**：Menu.js 的 `_tracks` 数组写死了三个虚构赛道 ID (`circuit`/`mountain`/`desert`)，而 TrackLoader 只注册了 `'motor-speedway'` 一个赛道。点击"开始比赛"时 `onTrackSelect('circuit')` 传给 TrackLoader 会找不到赛道。

@@ -60,13 +60,36 @@
 4. **样式内联注入**：Touch.js 通过 `<style>` 注入 CSS，无需外部样式表依赖
 5. **错误隔离**：onAction 回调用 try-catch 包裹，避免单模块异常影响整个输入系统
 
+## 修复记录
+
+### Bug #3（🟡一般）: 暂停键映射不一致
+- **错误类型**：A. 模块内错误
+- **原因分析**：最初设计使用 P 键做暂停，但 Menu.js 的操作说明展示为 ESC 键
+- **改动内容**：
+  - `src/input/Keyboard.js` 第4行注释：`P 键` → `ESC 键`
+  - `src/input/Keyboard.js` 第21行映射表：`KeyP: 'pause'` → `Escape: 'pause'`
+  - `src/input/Keyboard.js` 第141~145行方法：`isJustPressed('KeyP')` → `isJustPressed('Escape')`
+- **关键代码行**：`Escape: 'pause'`（第21行）
+- **验证方法**：按下 ESC 键应触发 pause 回调，P 键不再触发暂停
+
+### Bug #6（🟢轻微）: Touch.js 模块级样式注入
+- **错误类型**：A. 模块内错误
+- **原因分析**：CSS 样式在模块顶层通过 `document.head.appendChild(STYLES)` 直接注入，无论 TouchInput 是否被初始化都会执行，桌面端造成无谓开销
+- **改动内容**：
+  - `src/input/Touch.js` 删除模块顶层的 `<style>` 创建和注入代码
+  - 将样式保留为纯字符串常量 `TOUCH_STYLES`
+  - 新增私有的 `_injectStyles()` 方法，使用 `TouchInput._stylesInjected` 静态标志保证全局仅注入一次
+  - 在 `init()` 方法中调用 `this._injectStyles()`
+- **关键代码行**：`_injectStyles()` 方法（第197~203行）
+- **验证方法**：在桌面端（无触摸设备）import Touch.js 不应注入样式；在移动端初始化 TouchInput 时注入一次
+
 ## 备注
 
 ### 调用方注意
 - `InputMapper` 的 `init(container)` 需要传入一个 DOM 容器用于挂载触摸控件（如果不需要触摸可以传 null/undefined）
 - `getState()` 每次调用即推进一帧（内部会清理瞬态状态），因此一帧内应该只调用一次
 - `getState()` 返回的是防篡改副本（浅拷贝），修改返回值不会影响内部状态
-- 暂停回调（'pause'）是瞬态的——只在按下 P 键的帧触发一次，适合做 toggle 切换
+- 暂停回调（'pause'）是瞬态的——只在按下 ESC 键的帧触发一次，适合做 toggle 切换
 - 若在桌面端开发，可以通过 Chrome DevTools 的 Device Mode 模拟触摸来测试触摸控件
 
 ### 依赖关系

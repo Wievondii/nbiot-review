@@ -143,7 +143,7 @@ export class GameLoop {
 
     // --- 比赛状态 ---
     this.state.onEnter(STATE_RACING, () => {
-      this.audio.playMusic('racing');
+      this.audio.playMusic('race');
       this._elapsedTime = 0;
       // 确保检查点系统已完成初始化并有玩家赛车注册
       this.checkpoints.registerCar('player');
@@ -168,7 +168,8 @@ export class GameLoop {
     // --- 完成状态 ---
     this.state.onEnter(STATE_FINISHED, () => {
       this.ui.showResults();
-      this.audio.playMusic('racing');
+      this.ui.hideHUD();
+      this.audio.playMusic('race');
     });
     this.state.onExit(STATE_FINISHED, () => {
       this.ui.hideResults();

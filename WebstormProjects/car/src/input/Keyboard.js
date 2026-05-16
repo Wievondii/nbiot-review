@@ -1,7 +1,7 @@
 /**
  * 键盘输入模块
  * 处理键盘按键的按下/释放状态追踪，支持 justPressed/justReleased 瞬态检测。
- * 提供 WASD / 方向键 / 空格 / P 键映射。
+ * 提供 WASD / 方向键 / 空格 / ESC 键映射。
  */
 
 /** 按键码 → 游戏动作映射表 */
@@ -18,7 +18,7 @@ export const KEY_ACTIONS = {
   ArrowRight: 'steerRight',
   // 功能键
   Space: 'drift',
-  KeyP: 'pause',
+  Escape: 'pause',
 };
 
 /**
@@ -138,11 +138,11 @@ export class KeyboardInput {
   }
 
   /**
-   * 暂停键（P）是否在本帧被按下
+   * 暂停键（ESC）是否在本帧被按下
    * @returns {boolean}
    */
   isPauseJustPressed() {
-    return this.isJustPressed('KeyP');
+    return this.isJustPressed('Escape');
   }
 
   // ── 事件处理 ──

@@ -5,7 +5,21 @@
 > **角色**：集成责任人
 
 ## 开发状态
-✅ 已完成（已通过审查修复）
+✅ 已完成（已通过审查修复 + Bug 修复）
+
+## 修复记录
+
+### Bug #1（🔴严重）: playMusic('racing') 参数不匹配
+- **错误类型**：A. 模块内错误
+- **原因分析**：GameLoop 调用 `audioManager.playMusic('racing')`，但 AudioManager 只支持 `'race'` 参数
+- **改动内容**：`src/core/GameLoop.js` 第146行和第172行，将 `'racing'` 改为 `'race'`
+
+### Bug #4（🟢轻微）: HUD在比赛完成后未隐藏
+- **错误类型**：A. 模块内错误
+- **原因分析**：进入 STATE_FINISHED 时未卸载 HUD DOM 元素，HUD 残留可见
+- **改动内容**：
+  - `src/core/GameLoop.js` 第171行：在 `onEnter(STATE_FINISHED)` 中调用 `this.ui.hideHUD()`
+  - `src/ui/UIManager.js` 第228-231行：新增 `hideHUD()` 方法，委托 `this.hud.unmount()`
 
 ## 任务进度
 - [x] 定义所有模块接口（src/types.js）

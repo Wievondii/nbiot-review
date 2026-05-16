@@ -9,10 +9,9 @@
  * 使用 Pointer Events 实现，兼容触屏和鼠标调试。
  */
 
-/* ── 内联样式（避免外部 CSS 依赖） ── */
+/* ── 内联样式字符串（初始化时注入，避免桌面端无谓开销） ── */
 
-const STYLES = document.createElement('style');
-STYLES.textContent = `
+const TOUCH_STYLES = `
   .touch-input-overlay {
     position: fixed;
     inset: 0;
@@ -126,7 +125,6 @@ STYLES.textContent = `
     box-shadow: 0 2px 24px rgba(147, 51, 234, 0.70);
   }
 `;
-document.head.appendChild(STYLES);
 
 /* ── 常量 ── */
 
@@ -193,12 +191,25 @@ export class TouchInput {
   }
 
   /**
+   * 注入触摸控件的 CSS 样式（仅初始化时执行一次）
+   * @private
+   */
+  _injectStyles() {
+    if (TouchInput._stylesInjected) return;
+    TouchInput._stylesInjected = true;
+    const el = document.createElement('style');
+    el.textContent = TOUCH_STYLES;
+    document.head.appendChild(el);
+  }
+
+  /**
    * 初始化：仅在触摸可用时创建 UI
    * @param {HTMLElement} container 挂载容器
    */
   init(container) {
     if (this._initialized) return;
 
+    this._injectStyles();
     this._createUI(container);
     this._bindEvents();
 

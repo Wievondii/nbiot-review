@@ -73,6 +73,9 @@ const TURN_TORQUE = 4000;
 /** 角速度阻尼系数（每帧衰减比例） */
 const ANGULAR_DAMPING = 0.1;
 
+/** 最大角速度（弧度/秒），防止数值爆炸 */
+const MAX_ANGULAR_VELOCITY = 10;
+
 // ============================================================
 // 赛车内部状态
 // ============================================================
@@ -141,14 +144,6 @@ export class PhysicsEngine {
 
     /** 总运行时间（秒） */
     this.totalTime = 0;
-
-    /**
-     * 漂移事件队列
-     * update() 过程中检测漂移状态变化，存入此队列
-     * GameLoop 通过 consumeDriftEvents() 消费并发射 EventBus 事件
-     * @type {{ type: 'drift_start' | 'drift_end', carId: string }[]}
-     */
-    this._driftEvents = [];
   }
 
   // ----------------------------------------------------------
@@ -170,7 +165,6 @@ export class PhysicsEngine {
     this.setBarriers(barriers);
     this.accumulator = 0;
     this.totalTime = 0;
-    this._driftEvents = [];
   }
 
   // ----------------------------------------------------------
@@ -264,20 +258,9 @@ export class PhysicsEngine {
     this.applyTorque(car.id, baseTorque);
 
     // ============================================================
-    // 3. 漂移更新 & 状态变化检测
+    // 3. 漂移更新
     // ============================================================
-    // 记录漂移前状态，以便检测变化
-    const wasDrifting = car.driftState.isDrifting;
-
     const driftResult = updateDriftState(car, input, dt);
-
-    // 检测漂移状态变化 → 记录漂移事件（供 GameLoop 通过 EventBus 发射）
-    if (wasDrifting !== car.driftState.isDrifting) {
-      this._driftEvents.push({
-        type: car.driftState.isDrifting ? 'drift_start' : 'drift_end',
-        carId: car.id,
-      });
-    }
 
     // 漂移时额外施加转向扭矩（甩尾效果）
     if (driftResult.extraTorqueMultiplier > 0) {
@@ -342,6 +325,13 @@ export class PhysicsEngine {
 
     // 角速度阻尼（转向系统摩擦）
     car.angularVelocity *= 1 - ANGULAR_DAMPING * dt * 60;
+
+    // 角速度上限钳制，防止数值爆炸
+    car.angularVelocity = clamp(
+      car.angularVelocity,
+      -MAX_ANGULAR_VELOCITY,
+      MAX_ANGULAR_VELOCITY
+    );
 
     // 用更新后的速度更新位置和角度
     car.position.x += car.velocity.x * dt;
@@ -445,25 +435,6 @@ export class PhysicsEngine {
   }
 
   // ----------------------------------------------------------
-  // 漂移事件消费
-  // ----------------------------------------------------------
-
-  /**
-   * 获取并清空漂移事件队列
-   *
-   * 由 GameLoop 在 update() 之后调用，通过 EventBus 发射事件：
-   *   - 'drift_start' → AudioManager.playDrift()
-   *   - 'drift_end'   → 停止漂移音效（由 AudioManager 处理）
-   *
-   * @returns {{ type: 'drift_start' | 'drift_end', carId: string }[]}
-   */
-  consumeDriftEvents() {
-    const events = this._driftEvents;
-    this._driftEvents = [];
-    return events;
-  }
-
-  // ----------------------------------------------------------
   // 状态查询
   // ----------------------------------------------------------
 
@@ -547,7 +518,6 @@ export class PhysicsEngine {
   reset() {
     this.accumulator = 0;
     this.totalTime = 0;
-    this._driftEvents = [];
     this.cars.clear();
     this.barriers = [];
     this.barrierGrid = null;
@@ -564,4 +534,15 @@ function dot(a, b) {
 
 function lengthOf(v) {
   return Math.sqrt(v.x * v.x + v.y * v.y);
+}
+
+/**
+ * 将值钳制在 [min, max] 范围内
+ * @param {number} val
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
+function clamp(val, min, max) {
+  return val < min ? min : val > max ? max : val;
 }
