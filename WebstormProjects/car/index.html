@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
-  <title>赛车游戏</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>3D 赛车游戏</title>
   <style>
     /* 全局重置 */
     *, *::before, *::after {
@@ -39,7 +39,6 @@
       display: block;
       width: 100%;
       height: 100%;
-      image-rendering: auto;
     }
 
     /* 加载中提示（在 JS 接管前显示） */
@@ -58,6 +57,20 @@
       letter-spacing: 0.1em;
       z-index: 100;
       transition: opacity 0.3s ease;
+    }
+
+    #loading .spinner {
+      width: 40px;
+      height: 40px;
+      margin-right: 16px;
+      border: 3px solid #333;
+      border-top-color: #ff4444;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     #loading.hidden {
@@ -88,12 +101,26 @@
 </head>
 <body>
   <div id="loading">
+    <div class="spinner"></div>
     <span>加载中...</span>
   </div>
   <div id="error"></div>
   <div id="gameContainer">
     <canvas id="gameCanvas"></canvas>
   </div>
+
+  <!-- ES Module Import Map（映射 three 和 cannon-es 到 jsdelivr CDN） -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+      "cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+    }
+  }
+  </script>
+
+  <!-- 主入口 -->
   <script type="module" src="main.js"></script>
 </body>
 </html>
