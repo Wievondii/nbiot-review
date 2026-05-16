@@ -1,23 +1,24 @@
 /**
- * @file 固定步长游戏主循环
+ * @file 固定步长游戏主循环（3D 版本）
  *
  * 使用 accumulator 模式实现固定时间步长的物理更新，
  * 渲染使用可变时间步长（跟随显示器刷新率）。
  *
  * 物理更新:
- *   PhysicsEngine.update(dt, inputState)  — PhysicsEngine 内部管理 accumulator
- *   raw frameTime 直接传入，由 PhysicsEngine 做固定步长转换
+ *   PhysicsEngine3D.update(dt, inputState)  — GameLoop 传入原始帧时间，
+ *   PhysicsEngine3D 内部管理 accumulator 做固定步长转换
  *
  * 渲染:
- *   每帧调用 render.render(cars, track, state)
+ *   每帧调用 RenderEngine3D.render(cars, track, state)
  *
  * 调用关系（接口调用关系表）:
- *   - physics.update(dt, inputState)       每物理帧 (PhysicsEngine 内部管理 accumulator)
- *   - physics.checkCollisions()            物理更新后检测碰撞并发射事件
- *   - render.render(cars, track, state)    每渲染帧
- *   - audio.playEngine(speed)              每渲染帧
- *   - track.loadTrack(name)                init 时
- *   - ui.updateHUD(data)                   每渲染帧
+ *   - physics.update(dt, inputState)         每物理帧
+ *   - physics.checkCollisions()              物理更新后检测碰撞并发射事件
+ *   - physics.getCarState(carId)             获取赛车 3D 状态
+ *   - render.render(cars, track, state)      每渲染帧
+ *   - audio.playEngine(speed)                每渲染帧
+ *   - track.loadTrack(name)                  init 时
+ *   - ui.updateHUD(data)                     每渲染帧
  */
 
 import {
@@ -40,15 +41,15 @@ import {
 export class GameLoop {
   /**
    * @param {Object} deps - 依赖注入
-   * @param {import('../types.js').IPhysicsEngine} deps.physicsEngine
-   * @param {import('../types.js').IRenderEngine} deps.renderEngine
+   * @param {import('../types.js').IPhysicsEngine3D} deps.physicsEngine
+   * @param {import('../types.js').IRenderEngine3D} deps.renderEngine
    * @param {import('../types.js').IInputController} deps.inputController
-   * @param {import('../types.js').IAudioManager} deps.audioManager
+   * @param {import('../types.js').IAudioManager3D} deps.audioManager
    * @param {import('../types.js').ITrackManager} deps.trackManager
    * @param {import('../types.js').IUIManager} deps.uiManager
    * @param {import('../types.js').IEventBus} deps.eventBus
    * @param {import('../types.js').IGameState} deps.gameState
-   * @param {import('../track/Checkpoint.js').CheckpointSystem} deps.checkpointSystem
+   * @param {Object} deps.checkpointSystem
    */
   constructor(deps) {
     this.physics = deps.physicsEngine;
@@ -60,6 +61,7 @@ export class GameLoop {
     this.eventBus = deps.eventBus;
     this.state = deps.gameState;
     this.checkpoints = deps.checkpointSystem;
+    this.camera = deps.cameraController || null;
 
     /** @type {boolean} 循环是否运行中 */
     this._running = false;
@@ -75,7 +77,7 @@ export class GameLoop {
 
     /**
      * 上一帧赛车位置缓存（用于检查点线段相交检测）
-     * @type {Object<string, {x:number, y:number}>}
+     * @type {Object<string, {x:number, z:number}>}
      */
     this._prevCarPos = {};
 
@@ -123,26 +125,40 @@ export class GameLoop {
         trackData = this.track.loadTrack('motor-speedway');
       }
       if (trackData) {
-        // 初始化物理引擎: 创建赛车、设置赛道边界
-        this.physics.init(
-          [
-            {
-              id: 'player',
-              position: trackData.startPoint,
-              angle: trackData.startAngle,
-            },
-          ],
-          trackData.barriers
-        );
-        // 初始化检查点系统: 注册赛道和玩家赛车
+        // 创建物理赛车
+        this.physics.createCar({
+          id: 'player',
+          position: trackData.startPoint,
+          angle: trackData.startAngle,
+        });
+        // 添加赛道碰撞边界（3D 格式: position/size/rotation）
+        if (trackData.barriers && trackData.barriers.length > 0) {
+          if (typeof this.physics.addBarriers === 'function') {
+            this.physics.addBarriers(trackData.barriers);
+          } else {
+            for (const barrier of trackData.barriers) {
+              this.physics.addBarrier(barrier);
+            }
+          }
+        }
+        // 初始化检查点系统
         this.checkpoints.init(trackData);
         this.checkpoints.registerCar('player');
+
+        // 初始化摄像机控制器（获取渲染引擎的 camera 和 car 模型）
+        if (this.camera && this.camera.init) {
+          const cam = this.render.getCamera ? this.render.getCamera() : null;
+          // CarModel 会在渲染引擎创建后挂载到 scene，此处传 null 作为占位
+          // CameraController 在 update 中会使用 carState.position 计算位置
+          if (cam) {
+            this.camera.init(cam, null);
+            if (window.DEBUG) console.log('[GameLoop] CameraController 已初始化');
+          }
+        }
       }
     });
 
     // --- 倒计时状态 ---
-    // 倒计时由 UI 组件 (Countdown) 内部通过 setTimeout / CSS 动画驱动，
-    // 完成后通过 EVENT_COUNTDOWN_COMPLETE 通知 GameLoop
     this.state.onEnter(STATE_COUNTDOWN, () => {
       this.ui.showCountdown(3);
       this.audio.playCountdown();
@@ -192,11 +208,17 @@ export class GameLoop {
       if (newState === STATE_RACING && prevState !== STATE_RACING) {
         this._lastTime = performance.now() / 1000;
       }
-      // 更新摄像机视角跟随赛车
+      // 更新摄像机视角跟随赛车（3D）
       if (newState === STATE_RACING || newState === STATE_COUNTDOWN) {
         const car = this.physics.getCarState('player');
         if (car) {
-          this.render.setCamera(car.position, car.angle);
+          if (this.camera && this.camera.update) {
+            this.camera.update(0, car);
+          } else {
+            // 兼容：无 CameraController 时直接 setCamera
+            const angle = car.rotation ? car.rotation.y : 0;
+            this.render.setCamera(car.position, angle);
+          }
         }
       }
     });
@@ -234,7 +256,7 @@ export class GameLoop {
       this.audio.playDrift();
     });
 
-    // UI 按钮动作 → 状态切换（修复 Bug #4：UIManager 通过 EventBus 发送 action 事件）
+    // UI 按钮动作 → 状态切换
     this.eventBus.on(EVENT_ACTION, (action) => {
       if (action === 'start' && this.state.is(STATE_MENU)) {
         this.state.setState(STATE_COUNTDOWN);
@@ -368,14 +390,15 @@ export class GameLoop {
 
     // ================================================================
     // 物理更新（仅 racing 状态执行）
-    // PhysicsEngine.update(dt, inputState) 内部管理 accumulator，
+    // PhysicsEngine3D.update(dt, inputState) 内部管理 accumulator，
     // GameLoop 只需传入原始帧时间
     // ================================================================
     if (this.state.is(STATE_RACING)) {
       // 物理更新前记录赛车当前帧位置（作为检查点检测的"上一帧"位置）
+      // 3D 中使用 x, z 平面坐标（y 为高度轴）
       const carBefore = this.physics.getCarState('player');
       const prevPos = carBefore
-        ? { x: carBefore.position.x, y: carBefore.position.y }
+        ? { x: carBefore.position.x, z: carBefore.position.z }
         : null;
       if (prevPos) {
         this._prevCarPos['player'] = prevPos;
@@ -384,7 +407,7 @@ export class GameLoop {
       // 获取输入状态并传递给物理引擎
       const inputState = this.input.getState();
 
-      // PhysicsEngine 内部会做固定步长转换
+      // PhysicsEngine3D 内部会做固定步长转换
       this.physics.update(frameTime, inputState);
 
       // 物理更新后检测碰撞并发射事件
@@ -398,14 +421,12 @@ export class GameLoop {
       if (carAfter && this._prevCarPos['player']) {
         this.checkpoints.update(
           'player',
-          carAfter.position,
+          { x: carAfter.position.x, z: carAfter.position.z },
           this._prevCarPos['player']
         );
       }
 
-      // 【BLOCKER #2 兼容修复】检测漂移状态变化并发射事件
-      // PhysicsEngine 内部更新漂移状态但不通过 EventBus 通知，
-      // 在此处由 GameLoop 检测变化并广播
+      // 检测漂移状态变化并发射事件
       if (carAfter) {
         if (carAfter.isDrifting && !this._prevDrifting) {
           this.eventBus.emit(EVENT_DRIFT_START, { carId: 'player' });
@@ -424,7 +445,6 @@ export class GameLoop {
     // ================================================================
 
     // 获取当前赛车状态和赛道数据
-    // 【安全守卫】非 racing 状态下物理引擎可能尚未初始化，getCarState 可能返回 null
     const playerCar =
       this.state.is(STATE_RACING) || this.state.is(STATE_COUNTDOWN)
         ? this.physics.getCarState('player')
@@ -434,9 +454,18 @@ export class GameLoop {
       : playerCar
         ? [playerCar]
         : [];
-    
-    // 获取赛道数据（TrackLoader 使用 getCurrentTrack 而非 getTrackData）
-    const trackData = this.track.getCurrentTrack();
+
+    // 获取赛道数据
+    const trackData = this.track.getCurrentTrack
+      ? this.track.getCurrentTrack()
+      : this.track.getTrackData
+        ? this.track.getTrackData()
+        : null;
+
+    // 摄像机更新（仅在赛车可用时）
+    if (playerCar && this.camera && this.camera.update) {
+      this.camera.update(frameTime, playerCar);
+    }
 
     // 调用渲染引擎
     this.render.render(allCars, trackData, this.state.current);
@@ -454,10 +483,14 @@ export class GameLoop {
     if (this.state.is(STATE_RACING) || this.state.is(STATE_PAUSED)) {
       this.ui.updateHUD({
         speed: playerCar ? playerCar.speed : 0,
+        gear: playerCar ? (playerCar.gear || 1) : 1,
+        rpm: playerCar ? (playerCar.rpm || 0) : 0,
         lap: this.checkpoints.getLap('player'),
         totalLaps: trackData ? trackData.lapCount : 3,
         elapsedTime: this._elapsedTime,
+        time: this._elapsedTime,
         isDrifting: playerCar ? playerCar.isDrifting : false,
+        position: 1,
         isRacing: this.state.is(STATE_RACING),
       });
     }
