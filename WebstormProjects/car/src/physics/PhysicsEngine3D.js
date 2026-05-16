@@ -150,9 +150,16 @@ export class PhysicsEngine3D {
    * 在循环中先调用 carPhysics.step() 消费输入，再 world.step() 步进物理。
    *
    * @param {number} dt - 距上一帧的时间（秒）
+   * @param {import('../types.js').InputState} [inputState] - 输入状态（可选）
+   *   提供时将自动调用 applyInput('player', inputState)
    */
-  update(dt) {
+  update(dt, inputState) {
     if (!this.world) return;
+
+    // 如果传入了输入状态，先分发给玩家赛车
+    if (inputState) {
+      this.applyInput('player', inputState);
+    }
 
     this._accumulator += dt;
 
