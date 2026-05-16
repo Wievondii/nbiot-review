@@ -389,6 +389,11 @@ export class GameLoop {
     }
 
     // ================================================================
+    // 输入状态采集（每帧执行，包括暂停状态 — 确保 ESC 等按键能被检测）
+    // ================================================================
+    const inputState = this.input.getState();
+
+    // ================================================================
     // 物理更新（仅 racing 状态执行）
     // PhysicsEngine3D.update(dt, inputState) 内部管理 accumulator，
     // GameLoop 只需传入原始帧时间
@@ -403,9 +408,6 @@ export class GameLoop {
       if (prevPos) {
         this._prevCarPos['player'] = prevPos;
       }
-
-      // 获取输入状态并传递给物理引擎
-      const inputState = this.input.getState();
 
       // PhysicsEngine3D 内部会做固定步长转换，并自动处理输入应用
       this.physics.update(frameTime, inputState);
@@ -485,7 +487,7 @@ export class GameLoop {
         speed: playerCar ? playerCar.speed : 0,
         gear: playerCar ? (playerCar.gear || 1) : 1,
         rpm: playerCar ? (playerCar.rpm || 0) : 0,
-        lap: this.checkpoints.getLap('player'),
+        lap: this.checkpoints.getLap('player') + 1,
         totalLaps: trackData ? trackData.lapCount : 3,
         elapsedTime: this._elapsedTime,
         time: this._elapsedTime,

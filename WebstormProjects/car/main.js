@@ -231,7 +231,10 @@ async function main() {
   gameLoop.start();
   gameStarted = true;
   clearTimeout(loadingTimeout);
-  if (loading) loading.classList.add('hidden');
+  if (loading) {
+    loading.classList.add('hidden');
+    loading.style.display = 'none'; // 彻底移除占位，防止遮挡 Canvas
+  }
 
   if (window.DEBUG) {
     console.timeEnd('[Main] 启动耗时');
