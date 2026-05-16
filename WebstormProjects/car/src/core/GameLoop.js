@@ -474,7 +474,7 @@ export class GameLoop {
     // 音频更新
     // ================================================================
     if (this.state.is(STATE_RACING) && playerCar) {
-      this.audio.playEngine(playerCar.speed);
+      this.audio.playEngine(playerCar.rpm, playerCar.speed);
     }
 
     // ================================================================

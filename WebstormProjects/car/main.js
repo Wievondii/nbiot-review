@@ -159,7 +159,8 @@ async function main() {
   // 加载默认赛道 'motor-speedway-3d'
   const track = trackLoader.loadTrack('motor-speedway-3d');
   if (!track) {
-    console.error('[Main] Failed to load track: motor-speedway-3d');
+    showError('赛道数据加载失败，请刷新页面重试。');
+    return;
   }
   if (window.DEBUG) console.log('[Main] TrackLoader3D 初始化完成');
 
@@ -180,6 +181,17 @@ async function main() {
   const { scene, camera } = sceneBuilder.build();
   renderEngine.setScene(scene);
   renderEngine.setCamera(camera);
+
+  // 6.6 根据容器实际尺寸调整 Canvas 分辨率，并监听窗口 resize 事件
+  renderEngine.resize(container.clientWidth, container.clientHeight);
+  window.addEventListener('resize', () => {
+    renderEngine.resize(container.clientWidth, container.clientHeight);
+    // 更新摄像机宽高比（如有透视摄像机）
+    if (camera.aspect) {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+    }
+  });
   if (window.DEBUG) console.log('[Main] 3D 场景和摄像机创建完成');
 
   // 7. 初始化摄像机控制器（第6位）
