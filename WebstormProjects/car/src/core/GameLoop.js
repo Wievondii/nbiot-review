@@ -467,8 +467,8 @@ export class GameLoop {
       this.camera.update(frameTime, playerCar);
     }
 
-    // 调用渲染引擎
-    this.render.render(allCars, trackData, this.state.current);
+    // 调用渲染引擎（传入 scene 和 camera，RenderEngine3D.render(scene, camera)）
+    this.render.render(this.render.scene, this.render.camera);
 
     // ================================================================
     // 音频更新

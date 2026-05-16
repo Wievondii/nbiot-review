@@ -28,7 +28,7 @@ import { AudioManager3D } from './src/audio/index.js';
 import { TrackLoader3D, CheckpointSystem3D } from './src/track/index.js';
 import { PhysicsEngine3D } from './src/physics/index.js';
 import { RenderEngine3D } from './src/render/index.js';
-import { CameraController3D } from './src/render/index.js';
+import { CameraController3D, SceneBuilder } from './src/render/index.js';
 import { InputMapper3D } from './src/input/index.js';
 import { UIManager3D } from './src/ui/index.js';
 
@@ -156,8 +156,12 @@ async function main() {
 
   // 3. 初始化赛道系统（第2位）
   const trackLoader = new TrackLoader3D();
-  // 加载默认赛道 'motor-speedway'
-  trackLoader.loadTrack('motor-speedway');
+  // 加载默认赛道 'motor-speedway-3d'
+  const track = trackLoader.loadTrack('motor-speedway-3d');
+  if (!track) {
+    console.error('[Main] Failed to load track, falling back to default');
+    trackLoader.loadTrack('motor-speedway-3d'); // 确保有回退
+  }
   if (window.DEBUG) console.log('[Main] TrackLoader3D 初始化完成');
 
   // 4. 初始化检查点系统（第3位）
@@ -171,7 +175,13 @@ async function main() {
   // 6. 初始化渲染引擎（第5位）- 传入容器（不是 canvas，RenderEngine3D 会创建自己的 canvas）
   const renderEngine = new RenderEngine3D();
   renderEngine.init(container);
-  if (window.DEBUG) console.log('[Main] RenderEngine3D 初始化完成');
+
+  // 6.5 创建 3D 场景和默认摄像机（供渲染引擎和摄像机控制器使用）
+  const sceneBuilder = new SceneBuilder();
+  const { scene, camera } = sceneBuilder.build();
+  renderEngine.setScene(scene);
+  renderEngine.setCamera(camera);
+  if (window.DEBUG) console.log('[Main] 3D 场景和摄像机创建完成');
 
   // 7. 初始化摄像机控制器（第6位）
   const cameraController = new CameraController3D();
