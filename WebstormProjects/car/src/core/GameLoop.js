@@ -407,10 +407,7 @@ export class GameLoop {
       // 获取输入状态并传递给物理引擎
       const inputState = this.input.getState();
 
-      // 将玩家输入应用到物理引擎（applyInput 在 update 之前调用）
-      this.physics.applyInput('player', inputState);
-
-      // PhysicsEngine3D 内部会做固定步长转换
+      // PhysicsEngine3D 内部会做固定步长转换，并自动处理输入应用
       this.physics.update(frameTime, inputState);
 
       // 物理更新后检测碰撞并发射事件
