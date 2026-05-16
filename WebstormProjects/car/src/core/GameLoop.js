@@ -80,6 +80,15 @@ export class GameLoop {
 
     /** @type {boolean} 上一帧的漂移状态（用于检测变化） */
     this._prevDrifting = false;
+
+    /** @type {number} 帧计数器（FPS 监控用） */
+    this._frameCount = 0;
+
+    /** @type {number} 帧时间累加器（FPS 监控用） */
+    this._fpsAccumulator = 0;
+
+    /** @type {number} 上次 FPS 日志时间戳（秒） */
+    this._lastFpsLogTime = 0;
   }
 
   /**
@@ -88,6 +97,8 @@ export class GameLoop {
    * 必须在 start() 之前调用。
    */
   init() {
+    console.log('[GameLoop] Initializing...');
+
     // ================================================================
     // 【关键】必须先注册所有 onEnter/onExit/onStateChange 回调，
     // 再调用 setState()，确保初始状态的 onEnter 被正确触发。
@@ -270,6 +281,7 @@ export class GameLoop {
     // 这将触发 onEnter('menu') 回调
     // ================================================================
     this.state.setState(STATE_MENU);
+    console.log('[GameLoop] Initialized successfully');
   }
 
   /**
@@ -278,6 +290,7 @@ export class GameLoop {
    */
   start() {
     if (this._running) return;
+    console.log('[GameLoop] Starting game loop');
     this._running = true;
     this._lastTime = performance.now() / 1000;
     this._elapsedTime = 0;
@@ -326,6 +339,22 @@ export class GameLoop {
 
     // 限制最大帧时间，防止 tab 切换后时间突跳
     frameTime = Math.min(frameTime, MAX_FRAME_TIME);
+
+    // ================================================================
+    // FPS 监控（仅 debug 模式下输出）
+    // ================================================================
+    if (window.DEBUG) {
+      this._frameCount++;
+      this._fpsAccumulator += frameTime;
+      const nowSec = performance.now() / 1000;
+      if (nowSec - this._lastFpsLogTime >= 1.0) {
+        const avgFps = this._frameCount / (nowSec - this._lastFpsLogTime);
+        console.log(`[GameLoop] FPS: ${Math.round(avgFps)}`);
+        this._frameCount = 0;
+        this._fpsAccumulator = 0;
+        this._lastFpsLogTime = nowSec;
+      }
+    }
 
     // ================================================================
     // 物理更新（仅 racing 状态执行）

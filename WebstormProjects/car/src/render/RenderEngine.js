@@ -41,8 +41,8 @@ export class RenderEngine {
     this.ctx = canvas.getContext('2d');
     this._dpr = window.devicePixelRatio || 1;
 
-    // 设置画布尺寸（匹配 CSS 尺寸，考虑 DPR）
-    this._resize();
+    // 延迟到下一帧确保 DOM layout 完成后再获取画布尺寸
+    requestAnimationFrame(() => this._resize());
     window.addEventListener('resize', () => this._resize());
   }
 
@@ -53,6 +53,8 @@ export class RenderEngine {
   _resize() {
     if (!this.canvas) return;
     const rect = this.canvas.getBoundingClientRect();
+    // 零尺寸守卫：CSS 布局未完成时跳过，防止 createPattern() 在零尺寸 canvas 上返回 null
+    if (rect.width === 0 || rect.height === 0) return;
     this.canvas.width = rect.width * this._dpr;
     this.canvas.height = rect.height * this._dpr;
     this.ctx.setTransform(this._dpr, 0, 0, this._dpr, 0, 0);

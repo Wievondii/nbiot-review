@@ -113,6 +113,11 @@ export class AudioManager {
     try {
       this._ctx = new AC();
 
+      // 处理浏览器自动播放策略：AudioContext 初始可能为 suspended 状态
+      if (this._ctx.state === 'suspended') {
+        this._ctx.resume().catch(() => {});
+      }
+
       // 主音量
       this._masterGain = this._ctx.createGain();
       this._masterGain.gain.value = this._volume;
@@ -258,6 +263,14 @@ export class AudioManager {
     if (this._masterGain) {
       this._masterGain.gain.setValueAtTime(this._volume, this._ctx.currentTime);
     }
+  }
+
+  /**
+   * 检查音频系统是否已初始化。
+   * @returns {boolean}
+   */
+  isInitialized() {
+    return this._ctx !== null;
   }
 
   // ============================================================
@@ -452,6 +465,11 @@ export class AudioManager {
    */
   _startAmbient(freq, type, volume) {
     if (!this._ctx) return;
+
+    // 确保 AudioContext 在启动振荡器前处于运行状态
+    if (this._ctx.state === 'suspended') {
+      this._ctx.resume();
+    }
 
     const gain = this._ctx.createGain();
     gain.gain.value = volume;

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
   <title>赛车游戏</title>
   <style>
     /* 全局重置 */
@@ -63,12 +64,33 @@
       opacity: 0;
       pointer-events: none;
     }
+
+    /* 错误提示（默认隐藏，JS 在出错时显示） */
+    #error {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: #1a0000;
+      color: #ff6b6b;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 30px;
+      z-index: 200;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
   <div id="loading">
     <span>加载中...</span>
   </div>
+  <div id="error"></div>
   <div id="gameContainer">
     <canvas id="gameCanvas"></canvas>
   </div>
