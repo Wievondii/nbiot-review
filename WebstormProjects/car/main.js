@@ -58,7 +58,7 @@ function showError(message) {
   // 隐藏 loading（如果有）
   const loading = document.getElementById('loading');
   if (loading) {
-    loading.classList.add('hidden');
+  if (loading) loading.classList.add('hidden');
   }
 }
 
@@ -196,7 +196,7 @@ async function main() {
   gameLoop.start();
   gameStarted = true;
   clearTimeout(loadingTimeout);
-  loading.classList.add('hidden');
+  if (loading) loading.classList.add('hidden');
 
   if (window.DEBUG) {
     console.timeEnd('[Main] 启动耗时');

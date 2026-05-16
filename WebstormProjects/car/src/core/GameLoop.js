@@ -27,6 +27,7 @@ import {
   STATE_RACING,
   STATE_PAUSED,
   STATE_FINISHED,
+  EVENT_ACTION,
   EVENT_COLLISION,
   EVENT_COUNTDOWN_COMPLETE,
   EVENT_CHECKPOINT_PASSED,
@@ -97,7 +98,7 @@ export class GameLoop {
    * 必须在 start() 之前调用。
    */
   init() {
-    console.log('[GameLoop] Initializing...');
+    if (window.DEBUG) console.log('[GameLoop] Initializing...');
 
     // ================================================================
     // 【关键】必须先注册所有 onEnter/onExit/onStateChange 回调，
@@ -233,6 +234,15 @@ export class GameLoop {
       this.audio.playDrift();
     });
 
+    // UI 按钮动作 → 状态切换（修复 Bug #4：UIManager 通过 EventBus 发送 action 事件）
+    this.eventBus.on(EVENT_ACTION, (action) => {
+      if (action === 'start' && this.state.is(STATE_MENU)) {
+        this.state.setState(STATE_COUNTDOWN);
+      } else if (action === 'restart' && this.state.is(STATE_FINISHED)) {
+        this.state.setState(STATE_MENU);
+      }
+    });
+
     // ================================================================
     // 连接 CheckpointSystem 回调 → EventBus
     // ================================================================
@@ -281,7 +291,7 @@ export class GameLoop {
     // 这将触发 onEnter('menu') 回调
     // ================================================================
     this.state.setState(STATE_MENU);
-    console.log('[GameLoop] Initialized successfully');
+    if (window.DEBUG) console.log('[GameLoop] Initialized successfully');
   }
 
   /**
@@ -290,7 +300,7 @@ export class GameLoop {
    */
   start() {
     if (this._running) return;
-    console.log('[GameLoop] Starting game loop');
+    if (window.DEBUG) console.log('[GameLoop] Starting game loop');
     this._running = true;
     this._lastTime = performance.now() / 1000;
     this._elapsedTime = 0;

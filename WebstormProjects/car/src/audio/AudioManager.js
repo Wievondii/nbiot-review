@@ -130,7 +130,7 @@ export class AudioManager {
       this._setupEngine();
 
       this._initialized = true;
-      console.log('[AudioManager] 初始化完成');
+      if (window.DEBUG) console.log('[AudioManager] 初始化完成');
     } catch (e) {
       console.warn('[AudioManager] 初始化失败:', e.message);
     }
@@ -468,7 +468,7 @@ export class AudioManager {
 
     // 确保 AudioContext 在启动振荡器前处于运行状态
     if (this._ctx.state === 'suspended') {
-      this._ctx.resume();
+      this._ctx.resume().catch(() => {}); // 静默处理浏览器 autoplay 拒绝
     }
 
     const gain = this._ctx.createGain();
