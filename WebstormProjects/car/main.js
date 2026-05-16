@@ -159,8 +159,7 @@ async function main() {
   // 加载默认赛道 'motor-speedway-3d'
   const track = trackLoader.loadTrack('motor-speedway-3d');
   if (!track) {
-    console.error('[Main] Failed to load track, falling back to default');
-    trackLoader.loadTrack('motor-speedway-3d'); // 确保有回退
+    console.error('[Main] Failed to load track: motor-speedway-3d');
   }
   if (window.DEBUG) console.log('[Main] TrackLoader3D 初始化完成');
 

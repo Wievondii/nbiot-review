@@ -116,13 +116,13 @@ export class GameLoop {
       // 加载赛道（支持从 UI 菜单获取赛道名，如有不匹配则回退）
       const rawName = this.ui.getSelectedTrack
         ? this.ui.getSelectedTrack()
-        : 'motor-speedway';
+        : 'motor-speedway-3d';
       let trackData = this.track.loadTrack(rawName);
       if (!trackData) {
         console.warn(
-          `[GameLoop] 赛道 "${rawName}" 未注册，回退至 "motor-speedway"`
+          `[GameLoop] 赛道 "${rawName}" 未注册，回退至 "motor-speedway-3d"`
         );
-        trackData = this.track.loadTrack('motor-speedway');
+        trackData = this.track.loadTrack('motor-speedway-3d');
       }
       if (trackData) {
         // 创建物理赛车
