@@ -121,7 +121,8 @@ window.addEventListener('unhandledrejection', (event) => {
 // ============================================================
 async function main() {
   const loading = document.getElementById('loading');
-  const canvas = document.getElementById('gameCanvas');
+  /** @type {HTMLCanvasElement|null} 渲染引擎创建的 canvas（在 renderEngine.init 后填充） */
+  let canvas = null;
   const container = document.getElementById('gameContainer');
 
   if (window.DEBUG) console.time('[Main] 启动耗时');
@@ -176,6 +177,9 @@ async function main() {
   // 6. 初始化渲染引擎（第5位）- 传入容器（不是 canvas，RenderEngine3D 会创建自己的 canvas）
   const renderEngine = new RenderEngine3D();
   renderEngine.init(container);
+
+  // 获取渲染引擎创建的 canvas
+  canvas = container.querySelector('canvas');
 
   // 6.5 创建 3D 场景和默认摄像机（供渲染引擎和摄像机控制器使用）
   const sceneBuilder = new SceneBuilder();

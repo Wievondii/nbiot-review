@@ -105,6 +105,11 @@ export class RenderEngine3D {
     // 色彩空间
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
+    // 设置 CSS 样式使 canvas 填满容器
+    this.renderer.domElement.style.width = '100%';
+    this.renderer.domElement.style.height = '100%';
+    this.renderer.domElement.style.display = 'block';
+
     // 将 canvas 放入容器
     container.appendChild(this.renderer.domElement);
 
