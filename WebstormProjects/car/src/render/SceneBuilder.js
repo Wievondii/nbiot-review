@@ -8,6 +8,7 @@
  */
 
 import * as THREE from 'three';
+import { Lighting } from './Lighting.js';
 
 /**
  * 默认天空颜色（地平线附近）
@@ -184,6 +185,11 @@ export class SceneBuilder {
    */
   build() {
     const scene = this.createScene();
+
+    // 添加光照系统
+    const lighting = new Lighting(scene);
+    lighting.setup();
+
     const aspect = window.innerWidth / window.innerHeight;
     const camera = new THREE.PerspectiveCamera(65, aspect, 0.1, 1000);
     camera.position.set(0, 5, 10);

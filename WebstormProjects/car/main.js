@@ -29,6 +29,7 @@ import { TrackLoader3D, CheckpointSystem3D } from './src/track/index.js';
 import { PhysicsEngine3D } from './src/physics/index.js';
 import { RenderEngine3D } from './src/render/index.js';
 import { CameraController3D, SceneBuilder } from './src/render/index.js';
+import { TrackModel, CarModel } from './src/render/index.js';
 import { InputMapper3D } from './src/input/index.js';
 import { UIManager3D } from './src/ui/index.js';
 
@@ -182,6 +183,15 @@ async function main() {
   renderEngine.setScene(scene);
   renderEngine.setCamera(camera);
 
+  // 创建赛道视觉模型
+  const trackModel = new TrackModel();
+  trackModel.build(track);
+  scene.add(trackModel.getObject());
+
+  // 创建赛车视觉模型（初始位置 (0,0,0)，实际位置在 GameLoop 中同步）
+  const carModel = new CarModel();
+  scene.add(carModel.getObject());
+
   // 6.6 根据容器实际尺寸调整 Canvas 分辨率，并监听窗口 resize 事件
   renderEngine.resize(container.clientWidth, container.clientHeight);
   window.addEventListener('resize', () => {
@@ -221,6 +231,7 @@ async function main() {
     gameState,
     checkpointSystem,
     cameraController,
+    carModel,
   });
 
   // 11. 初始化游戏循环（内部会注册回调并设置初始状态）

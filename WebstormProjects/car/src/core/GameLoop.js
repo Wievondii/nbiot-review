@@ -62,6 +62,8 @@ export class GameLoop {
     this.state = deps.gameState;
     this.checkpoints = deps.checkpointSystem;
     this.camera = deps.cameraController || null;
+    /** @type {import('../render/CarModel.js').CarModel|null} 赛车视觉模型 */
+    this.carModel = deps.carModel || null;
 
     /** @type {boolean} 循环是否运行中 */
     this._running = false;
@@ -131,6 +133,11 @@ export class GameLoop {
           position: trackData.startPoint,
           angle: trackData.startAngle,
         });
+        // 同步赛车视觉模型初始位置
+        const carState = this.physics.getCarState('player');
+        if (carState && this.carModel) {
+          this.carModel.updateFromPhysics(carState);
+        }
         // 添加赛道碰撞边界（3D 格式: position/size/rotation）
         if (trackData.barriers && trackData.barriers.length > 0) {
           if (typeof this.physics.addBarriers === 'function') {
@@ -467,6 +474,12 @@ export class GameLoop {
     // 摄像机更新（仅在赛车可用时）
     if (playerCar && this.camera && this.camera.update) {
       this.camera.update(frameTime, playerCar);
+    }
+
+    // 更新赛车视觉模型位置（每帧）
+    if (playerCar && this.carModel) {
+      this.carModel.updateFromPhysics(playerCar);
+      this.carModel.updateWheelSpin(playerCar.speed);
     }
 
     // 调用渲染引擎（传入 scene 和 camera，RenderEngine3D.render(scene, camera)）
