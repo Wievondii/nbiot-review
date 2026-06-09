@@ -4,6 +4,9 @@ const chapters = [
 {title:"1.1 移动通信的概念与组成",points:[
 {t:"p",c:"移动通信是指通信双方有一方或两方处于移动状态中的通信。移动体可以是人、汽车、火车、飞机、轮船等。"},
 {t:"hl",c:"移动通信系统的四大子系统：<strong>用户子系统</strong>（移动终端）→ <strong>基站子系统</strong>（无线管理）→ <strong>交换子系统</strong>（核心网）→ <strong>传输子系统</strong>（有线/无线中继）"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s05_07.png",alt:"移动通信系统组成图"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s05_06.jpg",alt:"光纤配线架内部布线实物照片"},{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s37_69.jpg",alt:"手机功能演进与5G智能生活应用场景"},
+
 {t:"svg",id:"arch"},
 
 {t:"h4",c:"移动通信的7大特点"},
@@ -19,7 +22,8 @@ const chapters = [
 ["智能天线","难以采用","适于运用（同一频率）"],
 ["抗干扰","较好（2项干扰）","较差（4项干扰）"]
 ]},
-{t:"p",c:"<strong>关键结论</strong>：FDD适合高速移动场景（如高铁），TDD适合不对称业务（如互联网下行多上行少）。"}
+{t:"p",c:"<strong>关键结论</strong>：FDD适合高速移动场景（如高铁），TDD适合不对称业务（如互联网下行多上行少）。"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s06_09.png",alt:"声波传播物理示意图（多普勒效应）"}
 ]},
 {title:"1.3 多址方式",points:[
 {t:"h4",c:"正交多址（用户间无干扰）"},
@@ -31,12 +35,23 @@ const chapters = [
 ["MUSA","复数多元码","与PDMA性能相近"],
 ["PDMA","非正交特征图样","与MUSA性能相近"]
 ]},
-{t:"hl",c:"NOMA是5G-mMTC上行场景的重要候选方案，通过功率域/码域拓展无线传输带宽。"}
+{t:"hl",c:"NOMA是5G-mMTC上行场景的重要候选方案，通过功率域/码域拓展无线传输带宽。"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s13_23.png",alt:"不同多址接入技术原理示意图"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s15_27.png",alt:"PD-NOMA/SCMA/MUSA/PDMA等多址技术对比表"}
 ]},
 {title:"1.4 标准化组织",points:[
 {t:"p",c:"<strong>ITU</strong>（国际电信联盟）：联合国专门机构，负责全球频谱管理、卫星轨道分配、电信标准制定。赵厚麟为首位中国籍秘书长。"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s17_30.png",alt:"ITU 5G标准制定流程时间轴"},
 {t:"hl",c:"<strong>3GPP</strong> 由6个组织组成：ETSI(欧)、ARIB(日)、TTC(日)、CCSA(中)、TTA(韩)、ATIS(北美)。三级架构：PCG → TSG → WG。工作流程：早期研发 → 项目提案 → 可行性研究 → 技术规范 → 商用。"},
-{t:"p",c:"文档命名：3GPP TS/TR XX.YYY V x.y.z（TS=技术规范，TR=技术报告）"}
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s35_66.png",alt:"标准化组织关系图"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s19_33.png",alt:"3GPP生态系统与国际标准组织关系图"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s24_43.png",alt:"3GPP TSG-SA各工作组职责说明"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s24_44.png",alt:"3GPP TSG-RAN各工作组职责说明"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s26_47.png",alt:"3GPP技术标准从研发到商用流程图"},
+{t:"p",c:"文档命名：3GPP TS/TR XX.YYY V x.y.z（TS=技术规范，TR=技术报告）"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s36_68.png",alt:"1G到5G移动通信发展历程时间线"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s28_52.png",alt:"通信技术版本演进表（R99至R8冻结时间与特性）"},
+{t:"img",src:"images/ppt/2_第一节_移动通信概述_2024_s28_53.png",alt:"LTE演进版本（R9-R14）技术规格对照表"}
 ]}
 ]},
 {id:2,title:"第2章 5G移动通信技术",sections:[
@@ -44,8 +59,13 @@ const chapters = [
 {t:"hl",c:"5G演进三大维度：<strong>①频谱效率提升</strong> ②<strong>工作带宽增大</strong> ③<strong>频段向高频扩展</strong>"},
 {t:"svg",id:"5g-evolution"},
 {t:"p",c:"高阶调制：QPSK(2bit) → 16QAM(4bit) → 64QAM(6bit) → 256QAM(8bit)，每符号携带bit数 = log₂(M)，M为调制阶数。"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s16_31.png",alt:"256-QAM信号星座点阵示意图"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s16_32.png",alt:"1024-QAM调制星座图"},
 {t:"p",c:"多天线：MIMO 2×2 → 4×4 → 8×8 → 64×64 → Massive MIMO 256。频谱利用率越来越接近香农极限。"},
-{t:"hl",c:"<strong>核心规律</strong>：频率越高 → 带宽越大 → 速率越高，但传播损耗越大、穿透力越差、覆盖范围越小。"}
+{t:"img",src:"images/ppt/3_5G移动通信技术_s17_35.png",alt:"载波聚合技术演进历程图"},
+{t:"hl",c:"<strong>核心规律</strong>：频率越高 → 带宽越大 → 速率越高，但传播损耗越大、穿透力越差、覆盖范围越小。"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s13_23.png",alt:"基站在不同移动场景下的覆盖支持图"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s08_16.png",alt:"2013-2020年ITU/3GPP/IEEE 5G标准化进程时间线图"}
 ]},
 {title:"2.2 三大应用场景与核心指标",points:[
 {t:"table",h:["场景","全称","核心需求","典型应用"],r:[
@@ -63,18 +83,51 @@ const chapters = [
 ]},
 {title:"2.3 关键技术",points:[
 {t:"p",c:"<strong>3D-MIMO</strong>：在MIMO基础上增加垂直维度，波束三维赋型。<strong>毫米波</strong>（>20GHz）：频谱资源丰富，适合Massive MIMO部署。<strong>新型编码</strong>：LDPC码（长码）、Polar码（短码）。"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s18_38.png",alt:"5G关键技术图"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s13_24.png",alt:"LTE 3D-MIMO与Massive MIMO天线阵列规模"},
 {t:"hl",c:"5GC三大网元：<strong>AMF</strong>（接入和移动管理）+ <strong>UPF</strong>（用户面功能）+ <strong>SMF</strong>（会话管理功能）。控制面与用户面完全分离，SBA（基于服务的架构）。"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s22_44.png",alt:"5G核心网功能架构图（AMF/SMF/UPF等）"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s19_40.png",alt:"5G网络架构图"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s20_42.png",alt:"移动通信网络架构图"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s24_45.png",alt:"5G网络架构中UPF与MEC共同部署图"},
 {t:"svg",id:"5gc-arch"},
 {t:"table",h:["接口","功能"],r:[
 ["N1","UE ↔ AMF，NAS层信令"],
 ["N2","gNB ↔ AMF，控制面"],
 ["N3","RAN ↔ UPF，用户面数据"],
+["N4","5GC控制面与转发面接口"],
+["N5","非漫游场景用户数据传输"],
 ["N6","5GC ↔ 外部数据网络(DN)"],
+["N8","AMF ↔ UDM，用户数据"],
+["N9","UPF ↔ UPF，用户面数据"],
+["N10","UDM ↔ SMF"],
+["N11","AMF ↔ SMF"],
+["N12","AMF ↔ AUSF"],
+["N15","PCF ↔ AMF"],
 ["N22","网络切片选择功能(NSSF)"]
 ]},
 {t:"h4",c:"NSA vs SA 组网"},
 {t:"p",c:"<strong>NSA</strong>（非独立组网）：利用4G基础设施部署5G，控制信令走4G。<strong>SA</strong>（独立组网）：全新5G网络（新基站+新核心网）。选项2（5G基站+5G核心网）是最终模式。"},
-{t:"img",src:"images/exam/c176260c8493807c0c8333beaa906e2243a6427e5e51f5ff79452f72b1d53b68.jpg",alt:"5G与4G网络架构区分"}
+{t:"h4",c:"NSA组网选项详解"},
+{t:"p",c:"<strong>选项3系列</strong>：核心网用4G EPC，5G基站作为从站。选项3/3a/3x根据数据分流点不同区分。"},
+{t:"p",c:"<strong>选项7系列</strong>：核心网升级为5GC，4G基站仍为主站。选项7/7a/7x。"},
+{t:"p",c:"<strong>选项4系列</strong>：5G核心网+5G基站为主站，4G基站为从站。选项4/4a。"},
+{t:"p",c:"<strong>选项5</strong>：4G基站升级后连到5G核心网。"},
+{t:"p",c:"<strong>选项2</strong>：5G基站+5G核心网，最终模式，支持所有5G应用。"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s17_34.png",alt:"5G NSA架构下MCG和SCG概念图"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s25_46.png",alt:"4G核心网到5G核心网演进架构对比图"},
+{t:"p",c:"<strong>网络切片</strong>：将物理网络按业务需求虚拟为多个逻辑网络，每个切片独立配置资源。eMBB、mMTC、URLLC可分别使用不同切片。"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s18_37.png",alt:"5G网络切片三大场景架构图"},
+{t:"img",src:"images/exam/c176260c8493807c0c8333beaa906e2243a6427e5e51f5ff79452f72b1d53b68.jpg",alt:"5G与4G网络架构区分"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s09_18.png",alt:"5G NR核心技术特性图"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s13_22.png",alt:"LTE 7种MIMO模式分类与适用场景表"},
+{t:"img",src:"images/ppt/3_5G移动通信技术_s33_57.png",alt:"LTE宽带MTC子系统架构图"}
+]},
+{title:"2.4 CU/DU架构",points:[
+{t:"p",c:"5G基站采用CU（集中单元）+DU（分布式单元）分离架构。CU处理高层协议，DU处理物理层。"},
+{t:"h4",c:"四种部署形态"},
+{t:"ul",c:["①CU与DU共硬件部署（类似4G BBU）","②DU部署在BBU机房，CU集中部署","③DU集中部署，CU更高层次集中","④CU与DU共站集中部署（类似C-RAN）"]},
+{t:"p",c:"CU和DU可以是分离设备（通过F1接口通信），也可集成在同一物理设备中。CU之间通过Xn接口通信。"}
 ]}
 ]},
 {id:3,title:"第3章 dBm与dB（信号强度）",sections:[
@@ -92,7 +145,9 @@ const chapters = [
 ["0.1W","20dBm"],["0.01W","10dBm"],["0.001W","0dBm"],
 ["0.1mW","-10dBm"],["0.01mW","-20dBm"]
 ]},
-{t:"h4",c:"单位间的运算规则"},
+{t:"h4",c:"单位间的运算规则"},{t:"img",src:"images/ppt/4_dbm与db（天线与信号强度）_s12_12.jpg",alt:"网优魔方软件信号参数与邻区信息截图"},
+{t:"img",src:"images/ppt/4_dbm与db（天线与信号强度）_s12_13.jpg",alt:"手机LTE网络信号参数分析截图"},
+
 {t:"hl",c:"<strong>dBm - dBm = dB</strong>（两功率相除=信噪比SINR）。例：30dBm - 0dBm = 30dB。<strong>dBm + dBm</strong> = 两功率相乘（工程中很少用）。dBm和dBm之间只有加减，没有乘除。"}
 ]}
 ]},
@@ -107,18 +162,42 @@ const chapters = [
 ["时延容忍","1~10s","非实时业务"]
 ]},
 {t:"h4",c:"LPWAN（低功耗广域网）技术分类"},
+{t:"img",src:"images/ppt/5_物联网介绍_s21_39.jpg",alt:"物联网分类图"},
 {t:"svg",id:"iot-classify"},
-{t:"p",c:"<strong>授权频谱</strong>（3GPP标准）：NB-IoT、LTE-M(eMTC)。可靠性高、QoS有保障。<strong>非授权频谱</strong>（ISM频段）：LoRa、Sigfox。成本低、可部署专用网络。"}
+{t:"p",c:"<strong>授权频谱</strong>（3GPP标准）：NB-IoT、LTE-M(eMTC)。可靠性高、QoS有保障。<strong>非授权频谱</strong>（ISM频段）：LoRa、Sigfox。成本低、可部署专用网络。"},
+{t:"img",src:"images/ppt/5_物联网介绍_s16_25.png",alt:"蜂窝LPWAN物联网设备通信流程图"},
+{t:"img",src:"images/ppt/5_物联网介绍_s19_30.png",alt:"非蜂窝LPWAN通信架构流程图"},
+{t:"img",src:"images/ppt/5_物联网介绍_s20_32.png",alt:"SIGFOX与LoRaWAN频率范围对比表"},
+{t:"img",src:"images/ppt/5_物联网介绍_s07_09.png",alt:"eMTC与NB-IoT技术参数对比表"},
+{t:"img",src:"images/ppt/5_物联网介绍_s20_34.png",alt:"WLAN/WiFi HaLow技术频率范围图"},
+{t:"img",src:"images/ppt/5_物联网介绍_s20_36.png",alt:"NFC和RFID工作频率参数图"},
+{t:"img",src:"images/ppt/5_物联网介绍_s03_03.jpg",alt:"物联网概念与战略发展历程图"},
+{t:"img",src:"images/ppt/5_物联网介绍_s05_06.png",alt:"信息系统三层架构（感知层/传输层/应用层）"},
+{t:"img",src:"images/ppt/5_物联网介绍_s10_15.png",alt:"窄带IoT多领域应用场景图"},
+{t:"img",src:"images/ppt/5_物联网介绍_s13_20.png",alt:"无线通信技术数据速率/覆盖/功耗对比图"},
+{t:"img",src:"images/ppt/5_物联网介绍_s17_27.png",alt:"移动通信频段及NB-IoT频段部署政策表格"},
+{t:"img",src:"images/ppt/5_物联网介绍_s20_33.png",alt:"IEEE 802.11 WiFi标准频率范围表"},
+{t:"img",src:"images/ppt/5_物联网介绍_s21_38.jpg",alt:"近距离与远距离通信技术分类图"}
 ]}
 ]},
 {id:5,title:"第5章 NB-IoT概述",sections:[
 {title:"5.1 三种部署模式",points:[
+{t:"img",src:"images/ppt/6_NB_IoT_s04_06.jpg",alt:"NB-IoT特性图"},
+{t:"img",src:"images/ppt/6_NB_IoT_s20_34.png",alt:"NB-IoT/eMTC/LoRa/sigFox技术参数对比表"},
+{t:"img",src:"images/ppt/6_NB_IoT_s03_04.png",alt:"物联网网络架构（接入网/核心网/业务平台）"},
+{t:"img",src:"images/ppt/6_NB_IoT_s07_11.jpg",alt:"NB-IoT三种部署模式示意图（独立/保护带/带内）"},
+{t:"img",src:"images/ppt/6_NB_IoT_s05_08.jpg",alt:"物联网多领域应用场景总览图"},
 {t:"svg",id:"nb-iot-deploy"},
 {t:"table",h:["模式","频段","带宽","特点"],r:[
 ["独立(Standalone)","GSM频段重耕","180kHz+保护间隔","不依赖LTE，完全解耦"],
 ["保护带(Guard Band)","LTE边缘保护带","180kHz","不占LTE资源，需LTE≥10MHz"],
 ["带内(In-Band)","LTE PRB资源","占用1个RB","需LTE≥3MHz(产品≥5MHz)，可同PCI"]
 ]},
+{t:"h4",c:"部署模式详细说明"},
+{t:"p",c:"<strong>独立部署</strong>：GSM 200kHz刚好容纳NB-IoT 180kHz+保护间隔。NB-IoT基站和GSM基站比例1:1时保护带100kHz，1:3或1:4时200kHz。"},
+{t:"p",c:"<strong>保护带部署</strong>：LTE载波需≥10MHz，需严格滤波，保护带预留500kHz。"},
+{t:"p",c:"<strong>带内部署</strong>：占用LTE的1个PRB，可与LTE同PCI（504个NCellID）。3GPP要求≥3MHz，产品仅支持≥5MHz。"},
+{t:"p",c:"NB-IoT频段：下行OFDMA，上行SC-FDMA。NB-IoT有PCI（NCellID），共504个，可复用LTE PCI规划。帧结构与LTE Normal CP兼容：频域12子载波×15kHz，时域7个OFDM符号=0.5ms时隙。"},
 {t:"hl",c:"NB-IoT仅支持<strong>FDD半双工</strong>（HD-FDD）：不必同时收发，更省电。下行OFDMA，上行SC-FDMA。"}
 ]},
 {title:"5.2 物理信道与覆盖功耗",points:[
@@ -154,8 +233,16 @@ const chapters = [
 ]},
 {t:"h4",c:"物理信号"},
 {t:"hl",c:"<strong>NPSS</strong>：固定ZC序列，仅时间频率同步，不含PCI。<strong>NSSS</strong>：周期20ms，携带PCI（504个），仅NSSS即可确定PCI（LTE需PSS+SSS联合）。<strong>NRS</strong>：导频信号，用于信道质量测量和解调。"},
+{t:"img",src:"images/ppt/7_NB_IoT物理层_s07_10.jpg",alt:"NB-IoT NPSS时域结构与位置图"},
+{t:"p",c:"NSSS周期20ms，映射在偶数无线帧子帧9的最后11个符号上，每符号12子载波，序列长度11×12=132。NSSS携带PCI（504个），仅NSSS即可确定PCI（LTE需PSS+SSS联合）。"},
+{t:"img",src:"images/ppt/7_NB_IoT物理层_s08_13.jpg",alt:"LTE次同步信号（NSSS）结构教学图表"},
 {t:"h4",c:"物理信道"},
-{t:"ul",c:["NPBCH：子帧#0，TTI=640ms，承载MIB-NB","NPDCCH：承载调度信息、HARQ确认、寻呼指示","NPRACH：重新设计（LTE的1.08MHz太宽），单频3.75kHz传输，一次Preamble含4个Symbol Group","NB-IoT信号必须避免映射到LTE已使用的RE，保持正交性"]}
+{t:"p",c:"NPBCH位于子帧#0，TTI=640ms。8个无线帧=1个block，每个block中8个独立可解码块。NB-MIB含1600比特（含CRC、信道编码、速率匹配），每个子帧0传输相同的200比特（100符号）。132个RE中100个用于NPBCH，32个用于NRS。"},
+{t:"img",src:"images/ppt/7_NB_IoT物理层_s11_17.jpg",alt:"NPBCH结构详解"},
+{t:"img",src:"images/ppt/7_NB_IoT物理层_s14_22.png",alt:"NPDCCH/NPDSCH独立或保护带模式资源映射结构图"},
+{t:"img",src:"images/ppt/7_NB_IoT物理层_s14_23.png",alt:"NPDCCH/NPDSCH Inband资源网格分布图"},
+{t:"ul",c:["NPDCCH：承载调度信息、HARQ确认、寻呼指示","NB-IoT信号必须避免映射到LTE已使用的RE，保持正交性"]},
+{t:"p",c:"NPRACH重新设计（LTE PRACH带宽1.08MHz太宽）。单频3.75kHz传输，一次Preamble含4个Symbol Group，每个Symbol Group=5个Symbol+1个CP。"}
 ]}
 ]},
 {id:7,title:"第7章 NB-IoT基本过程",sections:[
@@ -165,6 +252,7 @@ const chapters = [
 ]},
 {title:"7.2 RRC连接管理",points:[
 {t:"p",c:"RRC状态：空闲态 ↔ 连接态。用户面优化引入<strong>RRC连接暂停</strong>（Suspend）和<strong>RRC连接恢复</strong>（Resume）流程。"},
+{t:"img",src:"images/ppt/8_NB_IoT基本过程_s07_10.png",alt:"RRC状态图"},
 {t:"h4",c:"附着过程（8步）"},
 {t:"p",c:"① RRC连接建立 → ② 鉴权 → ③ NAS安全模式 → ④ PDN连接建立(可选) → ⑤ EPS承载激活 → ⑥ 附着接受 → ⑦ 附着完成 → ⑧ RRC连接释放"}
 ]},
@@ -175,15 +263,28 @@ const chapters = [
 ["SIB2","RACH、接入限制、UL频率"],
 ["SIB3","同频小区重选"],
 ["SIB4","同频邻小区"],
-["SIB5","异频邻小区"]
+["SIB5","异频邻小区"],
+["SIB6","UTRAN邻小区"],
+["SIB7","GERAN邻小区"],
+["SIB8","CDMA邻小区"],
+["SIB9","家庭eNB名称"],
+["SIB14","扩展接入限制"],
+["SIB24","NR邻区"]
 ]},
+{t:"img",src:"images/ppt/8_NB_IoT基本过程_s15_23.png",alt:"NB-IoT MIB-NB及SIB-NB功能说明"},
 {t:"h4",c:"随机接入 — 覆盖等级(CEL)"},
 {t:"table",h:["等级","RSRP条件","Preamble重复次数"],r:[
 ["CEL0（最优）","> RSRPTH1","最少（可配1次）"],
 ["CEL1（中等）","RSRPTH2~RSRPTH1","居中（如4/8次）"],
 ["CEL2（最差）","< RSRPTH2","最大（可配32次）"]
 ]},
-{t:"p",c:"<strong>基于竞争</strong>：UE自行选Preamble，可能冲突。<strong>基于非竞争</strong>：基站指定Preamble，无冲突。"}
+{t:"p",c:"<strong>基于竞争</strong>：UE自行选Preamble，可能冲突。<strong>基于非竞争</strong>：基站指定Preamble，无冲突。"},
+{t:"img",src:"images/ppt/8_NB_IoT基本过程_s18_27.png",alt:"UE与eNB随机接入交互流程图"}
+]},
+{title:"7.4 NB-IoT多载波配置",points:[
+{t:"p",c:"NB-IoT支持多载波配置，一个小区可配置多个载波（Carrier），分为锚定载波（Anchor Carrier）和非锚定载波（Non-Anchor Carrier）。锚定载波承载NPBCH/NPSS/NSSS/SIB1等广播信息，非锚定载波仅承载数据。"},
+{t:"img",src:"images/ppt/8_NB_IoT基本过程_s25_38.png",alt:"LTE小区带宽与锚定PRB索引配置图"},
+{t:"img",src:"images/ppt/8_NB_IoT基本过程_s24_37.png",alt:"不同PRB数量下系统带宽频谱分布及DC载波位置图"}
 ]}
 ]},
 {id:8,title:"第8章 NB-IoT数据传输",sections:[
@@ -197,10 +298,21 @@ const chapters = [
 ["SMS","SMS over SGs(电路域) / SGd(MME直连)","少量数据"]
 ]},
 {t:"h4",c:"控制面上行数据传输（核心流程）"},
-{t:"p",c:"① NAS触发ControlPlaneServiceRequest → ② RRC连接建立 → ③ NAS加密数据封装在RRCConnectionSetupComplete → ④ 基站发S1AP InitialUEMessage → ⑤ MME解密后通过S11-U/SGW/PGW转发到应用服务器。"}
+{t:"p",c:"① NAS触发ControlPlaneServiceRequest → ② RRC连接建立 → ③ NAS加密数据封装在RRCConnectionSetupComplete → ④ 基站发S1AP InitialUEMessage → ⑤ MME解密后通过S11-U/SGW/PGW转发到应用服务器。"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s15_26.jpg",alt:"RRC连接建立过程信令交互图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s14_23.jpg",alt:"RRC连接暂停流程图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s08_12.png",alt:"UE初始附着及SMS传输流程时序图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s07_10.png",alt:"附着过程中MT SMS数据传输交互流程图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s03_04.jpg",alt:"CIoT网络架构及控制面/用户面数据传输路径图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s11_17.jpg",alt:"CIoT控制平面MO小数据传输信令流程图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s12_19.jpg",alt:"CIoT控制平面MT接收小数据包流程图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s13_21.jpg",alt:"LTE用户面数据传输信令流程图"}
 ]},
 {title:"8.2 数据调度",points:[
-{t:"hl",c:"<strong>NPDCCH和NPDSCH不能在同一子帧出现</strong>，有调度时延，降低终端解码成本。调度时延要求：NPDCCH起始晚于上一个NPDCCH结束后≥4ms；NPDSCH起始晚于NPDCCH结束后≥4ms。"}
+{t:"hl",c:"<strong>NPDCCH和NPDSCH不能在同一子帧出现</strong>，有调度时延，降低终端解码成本。调度时延要求：NPDCCH起始晚于上一个NPDCCH结束后≥4ms；NPDSCH起始晚于NPDCCH结束后≥4ms。"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s17_31.jpg",alt:"NB-IoT下行数据调度时序关系图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s18_33.jpg",alt:"NB-IoT上行数据调度时序关系图"},
+{t:"img",src:"images/ppt/9_NB_IoT 数据传输_s19_35.png",alt:"NPUSCH重复传输参数配置与时序图"}
 ]}
 ]},
 {id:9,title:"第9章 OFDM与无线帧结构",sections:[
@@ -212,12 +324,17 @@ const chapters = [
 ["带宽扩展性强","对频率偏移敏感"],
 ["抗多径衰落","同频干扰严重"],
 ["实现MIMO简单","上行需用SC-FDMA降低PAPR"]
-]}
+]},
+{t:"img",src:"images/ppt/（附加）9_正交频分复用_无线帧结构4__s04_01.png",alt:"OFDM技术原理与特点说明"},
+{t:"img",src:"images/ppt/（附加）9_正交频分复用_无线帧结构4__s04_03.png",alt:"OFDM信号调制解调过程图"},
+{t:"img",src:"images/ppt/（附加）9_正交频分复用_无线帧结构4__s09_09.png",alt:"OFDMA与SC-FDMA符号传输机制对比图"},
+{t:"img",src:"images/ppt/（附加）9_正交频分复用_无线帧结构4__s07_07.png",alt:"窗函数处理信号波形示意图"}
 ]},
 {title:"9.2 LTE帧结构",points:[
 {t:"svg",id:"lte-frame"},
 {t:"p",c:"<strong>类型1（FDD）</strong>：10子帧下行+10子帧上行/10ms，频域分开。<strong>类型2（TDD）</strong>：支持5ms和10ms周期，灵活上下行配比。"},
-{t:"hl",c:"TDD三个特殊时隙：<strong>DwPTS</strong>（下行导频）、<strong>GP</strong>（保护间隔）、<strong>UpPTS</strong>（上行导频）。GP大小决定TDD最大小区半径，由GP、PRACH的GT、OFDM的CP三者取最小值。"}
+{t:"hl",c:"TDD三个特殊时隙：<strong>DwPTS</strong>（下行导频）、<strong>GP</strong>（保护间隔）、<strong>UpPTS</strong>（上行导频）。GP大小决定TDD最大小区半径，由GP、PRACH的GT、OFDM的CP三者取最小值。"},
+{t:"img",src:"images/ppt/（附加）9_正交频分复用_无线帧结构4__s09_08.png",alt:"LTE下行OFDMA/上行SC-FDMA时频资源分配图"}
 ]},
 {title:"9.3 5G NR帧结构（Numerology）",points:[
 {t:"hl",c:"5G NR引入 <strong>Numerology</strong>：子载波间隔 = 2^μ × 15kHz，μ∈{0,1,2,3,4}。固定架构：无线帧10ms = 10子帧×1ms。灵活架构：不同μ下每子帧时隙数不同。"},
@@ -229,6 +346,9 @@ const chapters = [
 ["3","120kHz","8","80","14"],
 ["4","240kHz","16","160","14"]
 ]},
+{t:"img",src:"images/ppt/（附加）NR无线帧结构4_5G峰值速率的_s14_10.png",alt:"5G NR帧结构（240kHz子载波间隔）"},
+{t:"img",src:"images/ppt/（附加）NR无线帧结构4_5G峰值速率的_s07_04.png",alt:"5G NR时隙符号配置表格"},
+{t:"img",src:"images/ppt/（附加）NR无线帧结构4_5G峰值速率的_s31_32.png",alt:"5G帧结构选项对比表"},
 {t:"hl",c:"时隙符号分三类：<strong>D</strong>（下行）、<strong>U</strong>（上行）、<strong>X</strong>（灵活，含转换点）。NR上下行可在符号间转换（LTE在子帧交替时转换）。<strong>核心结论</strong>：子载波间隔越大→时隙越短→时隙数越多。子帧长度始终1ms。"}
 ]},
 {title:"9.4 物理资源：RE / RB / CCE",points:[
@@ -370,7 +490,10 @@ const chapters = [
 {label:"⑦ 用户面占比",text:"5G=80%（信令开销20%），LTE=75%（信令开销25%）。"}
 ],formula:"100 × 20 × [(7×14+6)/140] × 273 × 12 × 14 × 8 × 4 × 80% ≈ 1700Mbps",note:"此为5G NSA下行峰值速率（100MHz, 30kHz, 8:2配比, 256QAM, RANK=4）"},
 {t:"svg",id:"rate-calc"},
-{t:"img",src:"images/exam/259f9fecddd83739f850146794edebfe7d78882283d9950f35e3bd9b65d3bc46.jpg",alt:"5G/LTE速率计算参数对比表"}
+{t:"img",src:"images/exam/259f9fecddd83739f850146794edebfe7d78882283d9950f35e3bd9b65d3bc46.jpg",alt:"5G/LTE速率计算参数对比表"},
+{t:"img",src:"images/ppt/（附加）NR无线帧结构4_5G峰值速率的_s39_37.png",alt:"不同频段/子载波间隔对应资源块数量参数表格"},
+{t:"img",src:"images/ppt/（附加）NR无线帧结构4_5G峰值速率的_s33_33.png",alt:"5G UE与小区下上行峰速最低技术要求表"},
+{t:"img",src:"images/ppt/（附加）NR无线帧结构4_5G峰值速率的_s40_39.png",alt:"CQI指数与调制方式/编码率对应关系表"}
 ]},
 {title:"10.2 LTE子帧配比计算示例",points:[
 {t:"calc",title:"LTE TDD 子帧配比换算",steps:[
@@ -386,7 +509,8 @@ const chapters = [
 ["RANK","受限于终端能力","多径效果差、参数固定、频繁切换"],
 ["BLER","要求<10%","弱覆盖、重叠覆盖、上行干扰"]
 ]},
-{t:"hl",c:"一般建议 <strong>RANK × MCS > 72</strong>。RANK越高MCS越低（流间干扰），需寻求最优组合。NSA和SA速率区别主要在上行（NSA 1T4R，SA 2T4R）。"}
+{t:"hl",c:"一般建议 <strong>RANK × MCS > 72</strong>。RANK越高MCS越低（流间干扰），需寻求最优组合。NSA和SA速率区别主要在上行（NSA 1T4R，SA 2T4R）。"},
+{t:"img",src:"images/ppt/（附加）NR无线帧结构4_5G峰值速率的_s36_35.png",alt:"TD-LTE资源计算公式与参数解析"}
 ]}
 ]}
 ];

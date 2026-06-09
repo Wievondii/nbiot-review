@@ -161,9 +161,78 @@
   overflow-x: auto;
 }
 .q-img-wrap img {
-  max-width: 100%; max-height: 320px;
+  max-width: 100%; max-height: 280px;
   border-radius: 6px;
   cursor: zoom-in;
   object-fit: contain;
 }
 .q-img-wrap img:hover { transform: scale(1.01); }
+
+/* Question Type Badge */
+.q-type-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 400;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+/* Blank (Fill-in-the-blank) */
+.blank-area { display: flex; flex-direction: column; gap: 0.65rem; margin: 0.65rem 0; }
+.blank-field { display: flex; align-items: center; gap: 0.5rem; }
+.blank-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; color: var(--muted);
+  min-width: 2.5rem;
+}
+.blank-input {
+  flex: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-canvas);
+  color: var(--text);
+  outline: none;
+  transition: border-color 140ms ease;
+}
+.blank-input:focus { border-color: var(--accent); }
+.blank-input:disabled { opacity: 0.7; cursor: not-allowed; }
+.blank-answer {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  margin-top: 0.65rem;
+}
+.blank-answer-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; color: var(--success);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.blank-answer-item { font-size: 0.82rem; line-height: 1.55; margin-bottom: 0.15rem; }
+
+/* Short Answer */
+.short-area { margin: 0.65rem 0; }
+.short-input {
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-canvas);
+  color: var(--text);
+  outline: none;
+  resize: vertical;
+  transition: border-color 140ms ease;
+  box-sizing: border-box;
+}
+.short-input:focus { border-color: var(--accent); }
+.short-input:disabled { opacity: 0.7; cursor: not-allowed; }
+.short-answer-text { font-size: 0.82rem; line-height: 1.6; white-space: pre-wrap; }

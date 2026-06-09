@@ -68,27 +68,38 @@ function selectChapter(i) {
 }
 
 // ===== QUIZ =====
-let quiz=[], qIdx=0, ans=[], answered=false, selTags=new Set();
+let quiz=[], qIdx=0, ans=[], answered=false, selTags=new Set(), selType='all';
 
 function renderTagFilter(){
   const tags=[...new Set(allQuestions.map(q=>q.ch))];
-  document.getElementById('tag-filter').innerHTML=tags.map(t=>
-    `<button class="tag-chip ${selTags.has(t)?'active':''}" onclick="toggleTag('${t}')">${t}</button>`
-  ).join('');
+  const types=[{k:'all',l:'全部'},{k:'choice',l:'选择题'},{k:'blank',l:'填空题'},{k:'short',l:'简答题'}];
+  document.getElementById('tag-filter').innerHTML=
+    types.map(t=>`<button class="tag-chip ${selType===t.k?'active':''}" onclick="setType('${t.k}')">${t.l}</button>`).join('')+
+    tags.map(t=>`<button class="tag-chip ${selTags.has(t)?'active':''}" onclick="toggleTag('${t}')">${t}</button>`).join('');
 }
+function setType(t){selType=t;renderTagFilter();updateInfo();}
 function toggleTag(t){selTags.has(t)?selTags.delete(t):selTags.add(t);renderTagFilter();updateInfo();}
-function getPool(){return selTags.size?allQuestions.filter(q=>selTags.has(q.ch)):allQuestions;}
+function getPool(){
+  let pool=allQuestions;
+  if(selType!=='all')pool=pool.filter(q=>(q.type||'choice')===selType);
+  if(selTags.size)pool=pool.filter(q=>selTags.has(q.ch));
+  return pool;
+}
 function updateInfo(){
   const p=getPool();
+  const choice=allQuestions.filter(q=>!q.type||q.type==='choice').length;
+  const blank=allQuestions.filter(q=>q.type==='blank').length;
+  const short=allQuestions.filter(q=>q.type==='short').length;
   document.getElementById('quiz-info').innerHTML=`
     <div class="stat-item"><div class="stat-num">${allQuestions.length}</div><div class="stat-label mono">总题数</div></div>
     <div class="stat-item"><div class="stat-num">${p.length}</div><div class="stat-label mono">可选</div></div>
-    <div class="stat-item"><div class="stat-num">${selTags.size||'全部'}</div><div class="stat-label mono">章节</div></div>`;
+    <div class="stat-item"><div class="stat-num">${choice}/${blank}/${short}</div><div class="stat-label mono">选/填/简</div></div>`;
 }
 function startQuiz(n){
   let p=[...getPool()].sort(()=>Math.random()-.5);
   if(n>0&&n<p.length)p=p.slice(0,n);
-  quiz=p;qIdx=0;ans=new Array(p.length).fill(-1);answered=false;
+  quiz=p;qIdx=0;ans=p.map(q=>{if(q.type==='blank')return Array(q.a.length).fill('');if(q.type==='short')return '';return -1;});
+  answered=false;
   document.getElementById('quiz-controls').classList.add('hidden');
   document.getElementById('quiz-area').classList.remove('hidden');
   document.getElementById('quiz-result').classList.add('hidden');
@@ -97,19 +108,40 @@ function startQuiz(n){
 function renderQ(animate=true){
   const q=quiz[qIdx], pct=((qIdx+1)/quiz.length*100).toFixed(1);
   const area=document.getElementById('quiz-area');
-  area.innerHTML=`<div class="q-card">
-    <div class="q-meta"><span class="section-label mono">${q.ch}</span><span class="q-num mono">Q${qIdx+1}/${quiz.length}</span><div class="q-progress"><div class="q-progress-fill" style="width:${pct}%"></div></div></div>
-    ${q.img?`<div class="q-img-wrap"><img src="${q.img}" alt="题目配图" loading="lazy" onclick="openLightbox(this)"></div>`:''}
-    <div class="q-text">${q.q}</div>
-    <div class="opts">${q.o.map((o,i)=>{const L=['A','B','C','D'];let cls='option opt';
+  const isChoice = !q.type || q.type==='choice';
+  const isBlank = q.type==='blank';
+  const isShort = q.type==='short';
+  const typeLabel = isBlank?'填空题':isShort?'简答题':'选择题';
+  let body='';
+  if(isChoice){
+    body=`<div class="opts">${q.o.map((o,i)=>{const L=['A','B','C','D'];let cls='option opt';
       if(ans[qIdx]===i)cls+=' selected';
       if(answered){if(i===q.a)cls+=' correct';else if(ans[qIdx]===i)cls+=' wrong';}
-      return`<div class="${cls}" onclick="selOpt(${i})"><span class="opt-label mono">${L[i]}</span><span>${o}</span></div>`;}).join('')}</div>
+      return`<div class="${cls}" onclick="selOpt(${i})"><span class="opt-label mono">${L[i]}</span><span>${o}</span></div>`;}).join('')}</div>`;
+  } else if(isBlank){
+    const blanks = q.a.length;
+    const userInput = ans[qIdx] || Array(blanks).fill('');
+    body=`<div class="blank-area">${q.a.map((_,i)=>`<div class="blank-field"><label class="blank-label mono">空${i+1}</label><input class="blank-input" type="text" value="${userInput[i]||''}" onchange="updateBlank(${i},this.value)" ${answered?'disabled':''} placeholder="输入答案"></div>`).join('')}</div>`;
+    if(answered){
+      body+=`<div class="blank-answer"><div class="blank-answer-title mono">正确答案</div>${q.a.map((a,i)=>`<div class="blank-answer-item"><span class="mono">空${i+1}：</span>${a}</div>`).join('')}</div>`;
+    }
+  } else if(isShort){
+    const userInput = ans[qIdx]||'';
+    body=`<div class="short-area"><textarea class="short-input" rows="4" onchange="updateShort(this.value)" ${answered?'disabled':''} placeholder="输入你的答案...">${userInput}</textarea></div>`;
+    if(answered){
+      body+=`<div class="blank-answer"><div class="blank-answer-title mono">参考答案</div><div class="short-answer-text">${q.a}</div></div>`;
+    }
+  }
+  area.innerHTML=`<div class="q-card">
+    <div class="q-meta"><span class="section-label mono">${q.ch}</span><span class="q-type-badge mono">${typeLabel}</span><span class="q-num mono">Q${qIdx+1}/${quiz.length}</span><div class="q-progress"><div class="q-progress-fill" style="width:${pct}%"></div></div></div>
+    ${q.img?`<div class="q-img-wrap"><img src="${q.img}" alt="题目配图" loading="lazy" onclick="openLightbox(this)"></div>`:''}
+    <div class="q-text">${q.q}</div>
+    ${body}
     <div class="explain-box ${answered?'':'hidden'}"><div class="exp-title mono">解析</div><p>${q.e}</p></div>
   </div>
   <div class="q-nav">
     <button class="btn-bracket" onclick="prevQ()" ${qIdx===0?'disabled':''}>[ ← 上一题 ]</button>
-    <div>${!answered&&ans[qIdx]>=0?`<button class="btn-bracket primary" onclick="confirmQ()">[ 确认 ]</button>`:''}
+    <div>${!answered&&(isChoice?ans[qIdx]>=0:(isBlank?(ans[qIdx]||[]).some(v=>v):ans[qIdx]))?`<button class="btn-bracket primary" onclick="confirmQ()">[ 确认 ]</button>`:''}
     ${qIdx<quiz.length-1?`<button class="btn-bracket primary" onclick="nextQ()">[ 下一题 → ]</button>`:(answered?`<button class="btn-bracket primary" onclick="showResult()">[ 查看成绩 ]</button>`:'')}</div>
   </div>`;
   if (animate && !prefersReducedMotion) {
@@ -126,6 +158,15 @@ function selOpt(i){
   if(answered)return;
   ans[qIdx]=i;answered=false;renderQ(false);
 }
+function updateBlank(i,val){
+  if(answered)return;
+  if(!ans[qIdx])ans[qIdx]=Array(quiz[qIdx].a.length).fill('');
+  ans[qIdx][i]=val;renderQ(false);
+}
+function updateShort(val){
+  if(answered)return;
+  ans[qIdx]=val;renderQ(false);
+}
 function confirmQ(){
   answered=true;
   renderQ(false);
@@ -133,7 +174,12 @@ function confirmQ(){
 function nextQ(){if(qIdx<quiz.length-1){qIdx++;answered=false;renderQ();}}
 function prevQ(){if(qIdx>0){qIdx--;answered=false;renderQ();}}
 function showResult(){
-  let c=0,w=0,s=0;ans.forEach((a,i)=>{if(a===-1)s++;else if(a===quiz[i].a)c++;else w++;});
+  let c=0,w=0,s=0;ans.forEach((a,i)=>{
+    const q=quiz[i],isChoice=!q.type||q.type==='choice',isBlank=q.type==='blank';
+    if(isChoice){if(a===-1)s++;else if(a===q.a)c++;else w++;}
+    else if(isBlank){const ua=a||[];const ca=q.a;if(ua.every(v=>!v))s++;else if(ca.every((ans,idx)=>ua[idx]&&ua[idx].trim().toLowerCase()===ans.trim().toLowerCase()))c++;else w++;}
+    else{if(!a||!a.trim())s++;else c++;}
+  });
   const sc=Math.round(c/quiz.length*100);
   document.getElementById('quiz-area').classList.add('hidden');
   const r=document.getElementById('quiz-result');r.classList.remove('hidden');
@@ -150,7 +196,12 @@ function showResult(){
   }
 }
 function reviewWrong(){
-  const wr=[];ans.forEach((a,i)=>{if(a!==-1&&a!==quiz[i].a)wr.push(i);});
+  const wr=[];ans.forEach((a,i)=>{
+    const q=quiz[i],isChoice=!q.type||q.type==='choice',isBlank=q.type==='blank';
+    if(isChoice){if(a!==-1&&a!==q.a)wr.push(i);}
+    else if(isBlank){const ua=a||[];const ca=q.a;if(ua.some(v=>v)&&!ca.every((ans,idx)=>ua[idx]&&ua[idx].trim().toLowerCase()===ans.trim().toLowerCase()))wr.push(i);}
+    else{if(a&&a.trim())wr.push(i);}
+  });
   if(!wr.length){alert('没有错题！');return;}
   qIdx=wr[0];answered=true;
   document.getElementById('quiz-area').classList.remove('hidden');
