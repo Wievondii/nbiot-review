@@ -96,8 +96,13 @@ function updateInfo(){
     <div class="stat-item"><div class="stat-num">${choice}/${blank}/${short}</div><div class="stat-label mono">选/填/简</div></div>`;
 }
 function startQuiz(n){
-  let p=[...getPool()].sort(()=>Math.random()-.5);
-  if(n>0&&n<p.length)p=p.slice(0,n);
+  let pool=getPool();
+  let choice=pool.filter(q=>!q.type||q.type==='choice');
+  let nonChoice=pool.filter(q=>q.type==='blank'||q.type==='short');
+  // 选择题随机抽取，填空题和简答题全部包含
+  choice=[...choice].sort(()=>Math.random()-.5);
+  if(n>0&&n<choice.length+nonChoice.length)choice=choice.slice(0,Math.max(0,n-nonChoice.length));
+  let p=[...choice,...nonChoice].sort(()=>Math.random()-.5);
   quiz=p;qIdx=0;ans=p.map(q=>{if(q.type==='blank')return Array(q.a.length).fill('');if(q.type==='short')return '';return -1;});
   answered=false;
   document.getElementById('quiz-controls').classList.add('hidden');
