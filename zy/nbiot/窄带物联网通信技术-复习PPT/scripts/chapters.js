@@ -73,7 +73,8 @@ const chapters = [
 ["N22","网络切片选择功能(NSSF)"]
 ]},
 {t:"h4",c:"NSA vs SA 组网"},
-{t:"p",c:"<strong>NSA</strong>（非独立组网）：利用4G基础设施部署5G，控制信令走4G。<strong>SA</strong>（独立组网）：全新5G网络（新基站+新核心网）。选项2（5G基站+5G核心网）是最终模式。"}
+{t:"p",c:"<strong>NSA</strong>（非独立组网）：利用4G基础设施部署5G，控制信令走4G。<strong>SA</strong>（独立组网）：全新5G网络（新基站+新核心网）。选项2（5G基站+5G核心网）是最终模式。"},
+{t:"img",src:"images/exam/c176260c8493807c0c8333beaa906e2243a6427e5e51f5ff79452f72b1d53b68.jpg",alt:"5G与4G网络架构区分"}
 ]}
 ]},
 {id:3,title:"第3章 dBm与dB（信号强度）",sections:[
@@ -254,6 +255,7 @@ const chapters = [
 {id:10,title:"第10章 信号覆盖与CQI",sections:[
 {title:"10.1 RSRP信号覆盖等级",points:[
 {t:"hl",c:"RSRP（参考信号接收功率）是衡量无线覆盖质量的核心指标，单位dBm。"},
+{t:"img",src:"images/exam/e2b6a3b60a714b010d5350dd92c92d3e95aa785f61abfea0667cd50fd4eb2372.jpg",alt:"RSRP覆盖等级图"},
 {t:"table",h:["RSRP范围","覆盖等级","状态","速率能力"],r:[
 ["-75dBm以上","极好","信号极强","高速率"],
 ["-75 ~ -85dBm","好","信号强","高速率"],
@@ -268,6 +270,7 @@ const chapters = [
 {title:"10.2 CQI索引表（信道质量指示）",points:[
 {t:"p",c:"CQI（Channel Quality Indicator）由UE测量后上报给基站，基站根据CQI选择调制方式和编码速率，决定MCS（调制编码方案）。"},
 {t:"h4",c:"LTE CQI索引表（部分关键值）"},
+{t:"img",src:"images/exam/160719bacc73104fd71bdbdf728ec11b46c99b8f3cf65baf581f989518eb82f6.jpg",alt:"LTE CQI索引表"},
 {t:"table",h:["CQI","调制方式","码率×1024","频谱效率"],r:[
 ["0","—","—","Out of range"],
 ["1~6","QPSK","8~602","0.15~1.18"],
@@ -275,6 +278,7 @@ const chapters = [
 ["10~15","64QAM","466~948","2.73~5.55"]
 ]},
 {t:"h4",c:"5G NR CQI索引表（部分关键值）"},
+{t:"img",src:"images/exam/aa4bb20c3a07da1abf44c72bd88462b667c8e067b6064b0ab91f8eb6c9096070.jpg",alt:"5G NR CQI索引表"},
 {t:"table",h:["CQI","调制方式","码率×1024","频谱效率"],r:[
 ["0","—","—","Out of range"],
 ["1~3","QPSK","78~449","0.15~0.88"],
@@ -293,13 +297,18 @@ const chapters = [
 ["闭环Rank=1","低速移动、中低SINR","单流传输，兼顾速率和可靠性"]
 ]},
 {t:"hl",c:"<strong>RANK（秩）</strong>：LTE中最大为2，5G中目前最大为4。上行LTE为1，5G为2。RANK值越高，同时传输的数据流越多，峰值速率越高。"},
+{t:"img",src:"images/exam/0287931039634aaddc5e6335f9eedbd59d3a428214d6d93bc73d41baded9374b.jpg",alt:"MIMO天线模式与场景"},
 {t:"h4",c:"场景与天线模式对应"},
 {t:"table",h:["场景","移动速度","小区位置","天线模式","子帧配比"],r:[
 ["高速公路","高速（≤500km/h）","边缘→中心","发射分集→开环空间复用","3:1 / 3:9:2"],
 ["城市核心商业","低速/静止","中心","闭环空间复用","2:2 / 10:2:2"],
 ["一般城区","中低速","中心","开环/闭环空间复用","3:1 / 10:2:2"]
 ]},
-{t:"p",c:"<strong>5G最高阶调制</strong>：256QAM（8bit/符号）。城市核心商业区采用2:2配比，因为部分场景上行速率需求较高。"}
+{t:"p",c:"<strong>5G最高阶调制</strong>：256QAM（8bit/符号）。城市核心商业区采用2:2配比，因为部分场景上行速率需求较高。"},
+{t:"h4",c:"典型场景图"},
+{t:"img",src:"images/exam/047d9e9e941cb9db3332f118cf9e246be6b6908aa37854aa840f335ae0afda36.jpg",alt:"高速公路场景"},
+{t:"img",src:"images/exam/a41a3a6fd682a8377fcea170308583d201555336a6d1ccb89d2ae3ed3e15c390.jpg",alt:"城市核心商业区场景"},
+{t:"img",src:"images/exam/cb5a537a052ce65b936d83481bd89023d2269c02d6f72af5b87f55d28f45bac3.jpg",alt:"一般城区场景"}
 ]},
 {title:"10.4 测量事件（A1-A5 / B1-B2）",points:[
 {t:"h4",c:"系统内测量事件（同频/异频）"},
@@ -326,7 +335,9 @@ const chapters = [
 {t:"p",c:"<strong>准备阶段（1-9步）</strong>：类似X2，但通过MME中转。源eNB发HANDOVER REQUIRED → MME发HANDOVER REQUEST给目标 → 目标分配资源发ACKNOWLEDGE → MME发HANDOVER COMMAND给源eNB。"},
 {t:"p",c:"<strong>执行阶段（10-11步）</strong>：源eNB发RRC Reconfiguration → UE接入目标 → PDCP序号通过MME传递。"},
 {t:"p",c:"<strong>完成阶段（12-16步）</strong>：目标发PATH SWITCH REQUEST → MME更新通道 → 目标发HANDOVER NOTIFY → 源eNB释放资源。"},
-{t:"hl",c:"<strong>X2 vs S1区别</strong>：X2是基站间直连切换（更快），S1需经过MME中转（更慢，用于无X2接口时）。"}
+{t:"hl",c:"<strong>X2 vs S1区别</strong>：X2是基站间直连切换（更快），S1需经过MME中转（更慢，用于无X2接口时）。"},
+{t:"img",src:"images/exam/50d4fc8a5fa52e352294eb4a1f02754a37a4c269d5360491da2ea31d15192b74.jpg",alt:"S1切换流程图"},
+{t:"img",src:"images/exam/743e8008952f3c6b55fb7a7b201c1b18d541c615eafca936f6082f9332e13ace.jpg",alt:"切换流程详细图"}
 ]},
 {title:"10.6 NB-IoT资源开销",points:[
 {t:"h4",c:"NB-IoT下行信道资源占用"},
@@ -340,9 +351,11 @@ const chapters = [
 ["Paging","暂不支持","0%"]
 ]},
 {t:"hl",c:"<strong>总开销</strong>：NPSS(10%) + NSSS(5%) + NPBCH(10%) + SIB1(~2.5%) + SIBx(1.25%) ≈ <strong>27.5%~31.25%</strong>。用户可用资源约70%左右。"},
+{t:"img",src:"images/exam/38c18e7e51e1351baac74713d69635fecae086c65538901e4e05e8a55ea03c16.jpg",alt:"NB-IoT资源占用比例表"},
 {t:"h4",c:"NB-IoT速率计算示例"},
 {t:"p",c:"下行：100帧/秒 × 20时隙/帧 × 12×7 RE/时隙 × 2bit(QPSK) × 2天线 × 0.7(数据占比) ≈ <strong>0.5Mbit/s</strong>（约62.5KB/s）"},
-{t:"p",c:"上行：100帧/秒 × 20时隙/帧 × 12×7 RE/时隙 × 1bit(BPSK) × 1天线 × 0.7(数据占比) ≈ <strong>0.13Mbit/s</strong>（约16.25KB/s）"}
+{t:"p",c:"上行：100帧/秒 × 20时隙/帧 × 12×7 RE/时隙 × 1bit(BPSK) × 1天线 × 0.7(数据占比) ≈ <strong>0.13Mbit/s</strong>（约16.25KB/s）"},
+{t:"img",src:"images/exam/4010cd088aa2c6c987765cbec41aa87059a891da773cc47f2d4f4b612e632a99.jpg",alt:"NB-IoT速率计算参数表"}
 ]}
 ]},{id:11,title:"第11章 5G峰值速率计算",sections:[
 {title:"10.1 计算公式与教学",points:[
@@ -356,7 +369,8 @@ const chapters = [
 {label:"⑥ 天线(RANK)",text:"5G下行最大4/上行最大2（SA 2T4R，NSA 1T4R）。LTE下行最大2/上行最大1。"},
 {label:"⑦ 用户面占比",text:"5G=80%（信令开销20%），LTE=75%（信令开销25%）。"}
 ],formula:"100 × 20 × [(7×14+6)/140] × 273 × 12 × 14 × 8 × 4 × 80% ≈ 1700Mbps",note:"此为5G NSA下行峰值速率（100MHz, 30kHz, 8:2配比, 256QAM, RANK=4）"},
-{t:"svg",id:"rate-calc"}
+{t:"svg",id:"rate-calc"},
+{t:"img",src:"images/exam/259f9fecddd83739f850146794edebfe7d78882283d9950f35e3bd9b65d3bc46.jpg",alt:"5G/LTE速率计算参数对比表"}
 ]},
 {title:"10.2 LTE子帧配比计算示例",points:[
 {t:"calc",title:"LTE TDD 子帧配比换算",steps:[

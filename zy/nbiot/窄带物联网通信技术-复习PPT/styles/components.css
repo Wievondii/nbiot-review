@@ -1,0 +1,299 @@
+/* ===== Sticky Nav ===== */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-canvas);
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 2rem 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.nav-inner {
+  max-width: 96rem; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 48px; gap: 1rem;
+}
+.nav-brand {
+  font-family: Georgia, serif;
+  font-size: 1.05rem; font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.nav-brand span { color: var(--accent); }
+.nav-tabs { display: flex; gap: 2px; }
+.nav-tab {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; font-weight: 400;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid transparent; border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.nav-tab:hover { color: var(--text); border-color: var(--border); }
+.nav-tab.active {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.nav-right { display: flex; align-items: center; gap: 0.4rem; }
+.theme-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 400;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.theme-btn:hover { color: var(--text); border-color: var(--accent); }
+.theme-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
+
+/* ===== Page Shell ===== */
+.page-shell {
+  max-width: 96rem; margin: 0 auto;
+  padding: 1.5rem 2rem 4rem;
+}
+
+/* ===== Chapter Nav ===== */
+.chapter-nav {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.ch-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 400;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 140ms ease;
+  white-space: nowrap;
+}
+.ch-btn:hover { color: var(--text); border-color: var(--accent); }
+.ch-btn.active {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+/* ===== Knowledge Card ===== */
+.k-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: clamp(0.85rem, 1.4vw, 1.15rem) 1.25rem;
+  margin-bottom: 0.85rem;
+  transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.k-card:hover { border-color: var(--border-strong); }
+.k-card h3 {
+  font-size: clamp(1.3rem, 2.6vw, 1.5rem);
+  letter-spacing: -0.015em;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+.k-card h4 {
+  font-size: 1rem;
+  color: var(--accent);
+  margin: 1rem 0 0.45rem;
+  font-weight: 400;
+}
+.k-card p {
+  font-size: 0.96rem; line-height: 1.55;
+  margin-bottom: 0.45rem;
+}
+.k-card ul {
+  padding-left: 1.15rem; margin-bottom: 0.45rem;
+}
+.k-card li {
+  font-size: 0.96rem; line-height: 1.55;
+  margin-bottom: 0.25rem;
+}
+.k-card li::marker { color: var(--accent); }
+
+/* Highlight box */
+.hl {
+  background: var(--accent-bg);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  padding: 0.65rem 0.9rem;
+  margin: 0.65rem 0;
+  font-size: 0.92rem; line-height: 1.55;
+}
+.hl strong { color: var(--text); font-weight: 450; }
+
+/* Table */
+.k-table {
+  width: 100%; border-collapse: collapse;
+  margin: 0.65rem 0; font-size: 0.82rem;
+  border-radius: 4px; overflow: hidden;
+}
+.k-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 400;
+  background: var(--panel-soft);
+  color: var(--accent);
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.k-table td {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+.k-table tr:nth-child(even) td { background: var(--panel-soft); }
+
+/* Section Label — accent left-border pill */
+.section-label {
+  display: inline-flex; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 400;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent);
+  border-radius: 999px;
+  color: var(--muted-strong);
+  margin-bottom: 0.65rem;
+  background: transparent;
+}
+
+/* ===== Calc Tutorial ===== */
+.calc-box {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: clamp(0.85rem, 1.4vw, 1.15rem) 1.15rem;
+  margin: 0.65rem 0;
+}
+.calc-box .calc-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 400;
+  color: var(--accent);
+  margin-bottom: 0.65rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.calc-step {
+  display: flex; gap: 0.65rem; align-items: flex-start;
+  margin-bottom: 0.5rem; font-size: 0.92rem; line-height: 1.55;
+}
+.calc-step .step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 400;
+  color: var(--accent);
+  min-width: 1.35rem; height: 1.35rem;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0; margin-top: 0.1rem;
+}
+.calc-formula {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.55rem 0.9rem;
+  margin: 0.5rem 0;
+  color: var(--text);
+  overflow-x: auto;
+  line-height: 1.45;
+}
+.calc-note {
+  font-size: 0.78rem; color: var(--muted);
+  font-style: italic; margin-top: 0.35rem;
+}
+
+/* ===== SVG Diagram ===== */
+.diagram-wrap {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem;
+  margin: 0.65rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+.diagram-wrap svg { max-width: 100%; height: auto; }
+.diagram-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ===== Bracket Buttons — Pi.dev style [text] ===== */
+.btn-bracket {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; font-weight: 400;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted-strong);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.btn-bracket:hover { border-color: var(--accent); color: var(--text); }
+.btn-bracket.primary { color: var(--accent); border-color: var(--accent); }
+.btn-bracket.primary:hover { background: var(--accent-bg); }
+.btn-bracket:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ===== Exam Image ===== */
+.img-wrap {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem;
+  margin: 0.65rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+.img-wrap img {
+  max-width: 100%; height: auto;
+  border-radius: 6px;
+  cursor: zoom-in;
+  transition: transform 200ms ease;
+}
+.img-wrap img:hover { transform: scale(1.02); }
+
+/* ===== Lightbox ===== */
+.lightbox-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+.lightbox-inner {
+  position: relative;
+  max-width: 95vw; max-height: 95vh;
+}
+.lightbox-inner img {
+  max-width: 100%; max-height: 90vh;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.lightbox-close {
+  position: absolute; top: -12px; right: -12px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 140ms ease;
+}
+.lightbox-close:hover { border-color: var(--accent); color: var(--accent); }

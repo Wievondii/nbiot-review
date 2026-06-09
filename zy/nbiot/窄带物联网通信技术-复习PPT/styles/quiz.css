@@ -1,0 +1,169 @@
+/* ===== Quiz Section ===== */
+.quiz-tag-bar { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.85rem; }
+.tag-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 400;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.tag-chip:hover { border-color: var(--accent); color: var(--text); }
+.tag-chip.active { border-color: var(--accent); color: var(--text); background: var(--accent-bg); }
+
+.quiz-stats {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 0.85rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 0.65rem;
+}
+.stat-item { text-align: center; flex: 1; }
+.stat-num {
+  font-family: Georgia, serif;
+  font-size: 1.65rem; font-weight: 400;
+  color: var(--text); line-height: 1;
+}
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; color: var(--muted);
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quiz-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
+
+/* Question card */
+.q-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: clamp(0.85rem, 1.4vw, 1.15rem) 1.25rem;
+  margin-bottom: 0.85rem;
+}
+.q-meta {
+  display: flex; align-items: center; gap: 0.45rem;
+  margin-bottom: 0.65rem; flex-wrap: wrap;
+}
+.q-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; color: var(--accent);
+  font-weight: 400;
+}
+.q-progress {
+  flex: 1; height: 3px; background: var(--border);
+  border-radius: 999px; overflow: hidden;
+}
+.q-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 300ms ease; }
+.q-text {
+  font-size: 1rem; line-height: 1.55;
+  color: var(--text); margin-bottom: 0.85rem;
+  font-weight: 450;
+}
+.opts { display: flex; flex-direction: column; gap: 0.4rem; }
+.opt {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.96rem; line-height: 1.55;
+  color: var(--text-body);
+  transition: all 140ms cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex; gap: 0.55rem; align-items: flex-start;
+}
+.opt:hover { border-color: var(--accent); }
+.opt.selected { border-color: var(--accent); background: var(--accent-bg); color: var(--text); }
+.opt.correct { border-color: var(--success); background: var(--success-bg); color: var(--text); }
+.opt.wrong { border-color: var(--error); background: var(--error-bg); color: var(--text); }
+.opt-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 400;
+  color: var(--muted);
+  min-width: 1.2rem; flex-shrink: 0;
+}
+.opt.selected .opt-label { color: var(--accent); }
+.opt.correct .opt-label { color: var(--success); }
+.opt.wrong .opt-label { color: var(--error); }
+
+.explain-box {
+  margin-top: 0.85rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--success-bg);
+  border-left: 2px solid var(--success);
+  border-radius: 0 4px 4px 0;
+}
+.explain-box .exp-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 400;
+  color: var(--success);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.explain-box p { font-size: 0.82rem; line-height: 1.55; }
+
+.q-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+
+/* Result card */
+.result-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.result-score {
+  font-family: Georgia, serif;
+  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-weight: 400; color: var(--text);
+  line-height: 1;
+}
+.result-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; color: var(--muted);
+  margin-top: 0.35rem;
+}
+.result-breakdown {
+  display: flex; justify-content: center; gap: 2rem;
+  margin-top: 1.25rem;
+}
+.bd-item .bd-num {
+  font-family: Georgia, serif;
+  font-size: 1.4rem; font-weight: 400; line-height: 1;
+}
+.bd-item .bd-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.bd-correct .bd-num { color: var(--success); }
+.bd-wrong .bd-num { color: var(--error); }
+.bd-skip .bd-num { color: var(--warning); }
+
+/* Quiz Image */
+.q-img-wrap {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem;
+  margin-bottom: 0.65rem;
+  text-align: center;
+  overflow-x: auto;
+}
+.q-img-wrap img {
+  max-width: 100%; max-height: 320px;
+  border-radius: 6px;
+  cursor: zoom-in;
+  object-fit: contain;
+}
+.q-img-wrap img:hover { transform: scale(1.01); }
